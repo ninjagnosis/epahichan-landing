@@ -1,4 +1,4 @@
-# epahichan-landing
+# epahichan-public-landing
 
 Read `AGENTS.md` and `docs/handoff.md` first. They define the product, the boundaries and the claims this page must not make.
 
@@ -13,5 +13,5 @@ Every project is mounted under `~/code`. `../chhap` is the ePahichan product its
 ## Working rules
 
 - Build with `pnpm build` and fix every error before calling work done.
-- Commit in small steps with plain messages. Push to `origin` (git.ninjainfosys.com/chhap/epahichan-landing).
+- Commit in small steps with plain messages. Push to `origin` (git.ninjainfosys.com/epahichan/epahichan-public-landing).
 - Record design and architecture decisions in `docs/handoff.md`.
