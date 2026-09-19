@@ -1,6 +1,8 @@
 # ePahichan Landing — Information Architecture and Content Spec
 
-**Status:** proposed, awaiting review on [TEC-31](/TEC/issues/TEC-31).
+**Status:** revision 2 — technically approved by the CTO on [TEC-31](/TEC/issues/TEC-31) subject to
+three corrections, which this revision applies (§3.2–§3.4 island boundary, §4.7 measured budget,
+§7.1 runner model). Awaiting the user's product review.
 **Governs:** `epahichan-public-landing`. Nothing else.
 **Source of truth it implements:** `docs/handoff.md`. This spec does not invent a competing IA —
 it turns the handoff's seven-page plan into something an engineer can build and QA can verify
@@ -28,7 +30,7 @@ Verified in the working tree at `d9e16fa` (2 commits, 13 files):
 | Routes | **one** — `src/pages/index.astro` | eight — seven content routes + `404` |
 | Navigation | six anchor links into one page (`#platform`, `#individuals`, `#business`, `#developers`, `#trust`, `#help`) | six real routes, `aria-current` on the active one |
 | Contact | `mailto:hello@epahichan.com.np` — a placeholder | same placeholder, **flagged as a publication blocker** (§6.6) |
-| React islands | one (`MenuButton`), `client:load` on every viewport | one, `client:media` — no React shipped to desktop (§3.4) |
+| Client JavaScript | one React island (`MenuButton`), `client:load` on every viewport — **70,172 bytes gzipped** to run an 836-byte component | **no React, no framework** — ~15 lines of vanilla script in `SiteHeader.astro`, <1KB (§3.4) |
 | Focus styles | none defined anywhere in `global.css` | mandated, with a contrast number (§4.3) |
 | Typeface | CSS names `Inter`; nothing ever loads it, so it silently renders system sans | system stack, deliberately (§4.6) |
 | CI | no `.gitlab-ci.yml` in the repo at all | §7 |
@@ -58,6 +60,12 @@ link with a trailing slash, so the dev server and the static host agree about wh
 
 That is **seven content pages**, exactly the handoff's list. The handoff's item 7 is "Help/Contact"
 as a single page, so Contact is **a section of `/help/`**, not an eighth route.
+
+**`/404` is safe under `build.format: 'directory'`** — verified during CTO review, and recorded here
+so the build ticket does not have to rediscover it nervously. Pinning `directory` would normally turn
+`404.astro` into `dist/404/index.html`, which a CDN error-document setting cannot serve. Astro
+special-cases it: `STATUS_CODE_PAGES = {"/404","/500"}` in `astro/dist/core/build/common.js`, so it
+emits `dist/404.html` regardless. The error-document assumption in the table above holds.
 
 ### 1.1 Anchor → route disposition (explicit, as asked)
 
@@ -267,6 +275,14 @@ consumed by `BaseLayout.astro`, so the list of routes exists once in the codebas
 six-item array is duplicated in `index.astro` and `MenuButton.tsx`; that duplication does not survive
 this spec.
 
+**`SiteHeader.astro` renders both the desktop nav and the mobile panel, from that one array, at
+build time.** This is stated explicitly because the alternative is the defect this section exists to
+kill: if the panel's links are rendered by a client component, the array has to be handed across the
+component boundary as props and serialised into the page, and the first engineer who finds that
+awkward re-declares the array locally. There is no boundary to cross. Both lists come off the same
+`nav` constant in the same `.astro` file, in the same render pass. See §3.4 — after the measurement
+there, nothing on this site is rendered by a client framework at all.
+
 ### 3.3 Mobile navigation
 
 It is a **disclosure**, not a modal dialog. That choice sets the whole keyboard contract
@@ -276,6 +292,13 @@ It is a **disclosure**, not a modal dialog. That choice sets the whole keyboard 
 - **The panel element is always in the DOM**, shown and hidden with the `hidden` attribute.
   Today's implementation renders the panel only while open, so `aria-controls` points at an id that
   does not exist for as long as the menu is closed. Fix this in the build.
+- **Both the button and the panel are markup emitted by `SiteHeader.astro`.** The script does not
+  render either one; it toggles two attributes (`aria-expanded` on the button, `hidden` on the panel)
+  on elements that are already in the served HTML. That is the whole of its job, and it is why the
+  route array never leaves §3.2.
+- Because the panel ships in the HTML rather than being created on interaction, it must be
+  `hidden` in the initial markup **and** `display:none` above 900px, so it is absent from the tab
+  order and the a11y tree on desktop and before the script runs.
 - Opening moves focus to the first link in the panel.
 - `Escape` closes the panel and returns focus to the toggle.
 - Activating any link closes the panel (navigation replaces the document anyway, but the state must
@@ -285,17 +308,51 @@ It is a **disclosure**, not a modal dialog. That choice sets the whole keyboard 
 - The toggle needs an accessible name at all times: `<span class="sr-only">Menu</span>` inside it,
   and `aria-expanded` carries the state — do not change the name between "Open"/"Close".
 
-### 3.4 What React is actually for
+### 3.4 What React is actually for — measured, and the answer is "nothing"
 
-**Exactly one island, and it is the menu toggle.** Everything else on all eight routes is static
-Astro output with zero client JavaScript.
+The first revision of this spec kept one React island and moved it from `client:load` to
+`client:media="(max-width: 899px)"`. That was an improvement over `main` and it was still the wrong
+shape. The number decides it, so here is the number.
 
-Change the directive from `client:load` to `client:media="(max-width: 899px)"`. The toggle is
-`display:none` above 900px, so `client:load` currently downloads and hydrates React for every
-desktop visitor to operate a control they cannot see. `client:media` keeps the server-rendered
-markup and defers hydration to viewports that can actually use it.
+**Measured from the committed build output** in `dist/` (built 14:53 from source last modified
+11:55, so it is a build of current `main`; `gzip -9`, no rebuild needed and none run):
 
-**No second island is requested, and none is justified.** The two candidates were both rejected:
+| Shipped asset | Raw | gzip -9 | What it is |
+|---|---|---|---|
+| `_astro/client.LGetASx6.js` | 215,568 | **66,827** | React 19.3.0 + react-dom client runtime |
+| `_astro/index.-iFofLld.js` | 8,199 | **3,191** | Astro's islands/hydration runtime |
+| `_astro/MenuButton.BDU_6JZn.js` | 1,540 | **836** | the actual component |
+| inline `<script>` in `index.html` | — | — | the `astro-island` custom element definition |
+| **Total JavaScript** | **225,307** | **70,172** | |
+
+**70KB gzipped of framework to deliver 836 bytes of component.** 98.8% of the JavaScript on this
+site exists to run a hamburger menu. The CTO's review estimated the React runtime at 55–60KB gzip
+and set the threshold at "if the island measures over ~20KB gzipped, replace it". It measures
+66.8KB — more than three times the threshold — and the ≤50KB budget the first revision asserted is
+**already exceeded by `main` today**, which is exactly what happens to a ceiling nobody measured.
+
+`client:media` would not have fixed this. It defers *when* the 70KB downloads on mobile; it does
+not reduce it, and mobile is the only viewport where the control exists. The saving was real for
+desktop and irrelevant for the people actually using the menu.
+
+**Decision: React comes out of this repo entirely.** Removed in the build ticket:
+
+- `@astrojs/react`, `react`, `react-dom`, `@types/react`, `@types/react-dom` from `package.json`
+- `react()` from the `integrations` array in `astro.config.mjs`
+- `src/components/MenuButton.tsx`
+
+**Replacement:** a `<script>` inside `SiteHeader.astro` — Astro bundles, hashes and type-checks it
+like any other module, with no hydration runtime and no custom element. It binds one `click` on the
+toggle and one `keydown` for `Escape`, sets `aria-expanded` and `hidden`, and returns focus to the
+toggle on close. That is roughly fifteen lines and well under 1KB gzipped; §4.7 now budgets **5KB**
+against it, which is a ceiling with a measurement under it rather than a guess.
+
+What this costs: nothing that §3.3's keyboard contract needs. A disclosure has no state machine
+worth a framework — two attributes and a focus call. What it buys, beyond ~69.5KB on every mobile
+visit: the entire React dependency tree leaves a brochure site, which removes five packages from
+`pnpm install --frozen-lockfile` in CI, and shrinks the surface §7 has to gate.
+
+**No island is requested, and none is justified.** The candidates, rejected in writing:
 
 - The `/help/` FAQ → native `<details>`/`<summary>`. Keyboard- and screen-reader-accessible with
   no script. See §3.5.
@@ -303,8 +360,11 @@ markup and defers hydration to viewports that can actually use it.
   submission endpoint, which means a backend, spam handling, and personal-data handling. The
   contact CTA stays a `mailto:` in v1.
 
-If a future ticket proposes a second island, it must state what it does that HTML and CSS cannot,
-and what it costs in shipped bytes against the §4.7 budget.
+The handoff's "React only for interaction" is not being overruled on taste. It is being answered
+with a measurement: on the only interaction this site has, React costs 70KB and buys nothing HTML
+and fifteen lines do not already do. If a future ticket proposes reintroducing a framework, it must
+name what it does that HTML and CSS cannot, and pay for it against the §4.7 budget — which now has
+a measured floor to pay from.
 
 ### 3.5 The FAQ, without JavaScript
 
@@ -403,10 +463,15 @@ font request is a third-party request (§4.7).
 
 ### 4.7 Performance budget, per route
 
-| Budget | Limit |
-|---|---|
-| JavaScript, gzipped | **≤50KB** total (today: the one menu island, and none of it on desktop after §3.4) |
-| CSS, gzipped | **≤30KB** |
+Every limit below is either measured from the committed `dist/` or derived from one. The first
+revision asserted a ≤50KB JavaScript ceiling without measuring it; `main` was over it at the time
+of writing. Corrected:
+
+| Budget | Limit | Measured today (`main`, `gzip -9`) |
+|---|---|---|
+| JavaScript, gzipped | **≤5KB** per route | **70,172 — fails.** React 66,827 + islands runtime 3,191 + component 836. §3.4 removes all three; the replacement script is <1KB |
+| CSS, gzipped | **≤30KB** | 2,764 (`_astro/index.CN9syM30.css`, 8,754 raw) — passes with room |
+| HTML, gzipped, per route | **≤15KB** | 3,983 (`index.html`, 10,499 raw) — and today's single page carries all seven sections, so the split routes come in lower |
 | Font bytes | **0** in v1; ≤80KB if §6.2 approves a typeface |
 | Image bytes | **0** in v1 |
 | Third-party requests | **0** — no analytics, no tag manager, no font CDN, no embeds |
@@ -417,6 +482,18 @@ font request is a third-party request (§4.7).
 The zero-third-party and zero-storage rows are not aspirations. They are why this site needs no
 consent mechanism and carries no privacy surface, and they are what makes the `no backend, no
 authentication, no tracking` line in the handoff true in the built artifact rather than just in a doc.
+
+**How to re-measure**, so this table stays a measurement rather than becoming an assertion again —
+in the product container, never in the Paperclip container, and only with the 1-minute load under 8:
+
+```
+ssh devbox-host 'incus exec epahichan -- sudo -iu dev bash -lc "cd ~/code/epahichan-public-landing && pnpm build && for f in dist/_astro/*.js dist/**/*.html; do echo \"\$f \$(gzip -9 -c \$f | wc -c)\"; done"'
+```
+
+The numbers above were taken from the build already present in `dist/` (14:53, newer than every
+source file), so no build was run to produce them. Re-measure when a dependency changes, not every
+merge request — §7 gates correctness on every MR; the budget is checked when the dependency tree
+moves.
 
 ### 4.8 Head and metadata, per route
 
@@ -503,31 +580,87 @@ any point before launch for the cost of a small diff.
 Not urgent and deliberately so: 6.1, 6.3, and 6.7. The neutral treatment the handoff asked for is
 doing its job, and waiting costs nothing.
 
+**Status: 6.5 and 6.6 are escalated and out of this squad's hands.** The CTO has taken both to the
+CEO as [TEC-32](/TEC/issues/TEC-32), as company-wide questions rather than ePahichan ones —
+`airfone-landing-site` and eShasan have public surfaces too, and `airfone-landing-site/src/config/site.ts`
+ships `CONTACT_EMAIL = 'info@airfone.app'` with exactly the same unverified-mailbox exposure as 6.6.
+Answered once, the company has one legal position; answered three times by three squads, it has
+three. **The build does not wait on either** — every row in the table above has a defined interim
+behaviour, which is the point of the table.
+
+The claims boundary in §5 and the "any palette change re-runs the whole §4.2 table" rule are now
+company standard, not just this repo's: `shared/ENGINEERING-STANDARDS.md` §7 ("Public surfaces: what
+may be said, and the accessibility floor") carries them as §7.1 and §7.2, with the unconfirmed-contact-address
+rule as §7.3. This spec is cited there as the worked example. Nothing in that changes what is
+written here; it means a copy change on any ePahichan, eShasan or Airfone public surface is
+reviewable against the same eight checks.
+
 ---
 
 ## 7. CI gate proposal
 
 **This repo has no `.gitlab-ci.yml`.** Before it takes another line of application code, it gets
-one. The scope below is limited to what can actually be made to pass on the existing toolchain —
-nothing here needs a dependency the repo does not already have.
+one. The scope below is limited to what can actually be made to pass on the runners this company
+already has: shell executors, no Docker, no headless browser. Two dev-only Node dependencies are
+added (§7.1.1 and step 4) and nothing is installed globally on a shared runner.
 
 ### 7.1 Required on every merge request, from the next one onwards
 
-Single `verify` stage, on a Node + pnpm image, on the product container's runner — **never in the
-Paperclip container** (company engineering standards; also `cargo`/`flutter`/`pnpm build` are capped
-company-wide at 2 concurrent builds).
+Single `verify` stage, one job, **on the shared GitLab runners — not on the devbox.**
+
+**No `image:`.** The first revision of this section said "a Node + pnpm image". This company has no
+Docker executors. `build-v2` (eshasan-ci-builder) and `deploy-v2` (eshasan-ci-deployer) are **shell
+executors**, so an `image:` key is not an error — it is *silently ignored*, and the job runs against
+whatever the host happens to have. `chhap/.gitlab-ci.yml` documents this in its header comment;
+`eshasan/.gitlab-ci.yml` keeps `NODE_VERSION: "22"` / `PNPM_VERSION: "10.28.1"` as variables that
+feed nothing but the reader, for the same reason. A pipeline that appears to pin a toolchain and
+does not is worse than one that admits it does not, so:
+
+- `tags: [build-v2]`, no `image:`.
+- `NODE_VERSION` / `PNPM_VERSION` as documentation variables, matching the sibling repos.
+- **Verify the toolchain instead of installing it.** `command -v pnpm >/dev/null || { echo "pnpm
+  missing on the runner"; exit 1; }` then `pnpm -v` and `node -v`. Never `npm install -g pnpm` or
+  `corepack enable` — `eshasan/.gitlab-ci.yml:1191-1194` records that those need root on this
+  executor and fail `EACCES`, and a global install on a shared runner changes the toolchain under
+  every other repo that uses it.
+- `html-validate` comes from **this repo's own `devDependencies`** via `pnpm install
+  --frozen-lockfile`, and is invoked through `pnpm exec`. Never a global install.
+- Node major must satisfy Astro 5.18.2's declared `engines`: `18.20.8 || ^20.3.0 || >=22.0.0`
+  (read from `node_modules/astro/package.json`). The sibling pipelines document the runner host as
+  NodeSource 22.x, which satisfies it — **confirm `node -v` on `build-v2` before enabling the job**,
+  and let step 0 below assert it thereafter.
+
+**This gate does not spend the devbox budget.** The runners are the shared self-hosted executors
+described in `chhap/.gitlab-ci.yml`'s header and provisioned on numanode
+(`eshasan/.gitlab-ci.yml:1191`, "the build-v2 SHELL runner has pnpm/curl/unzip pre-baked as root —
+see numanode setup"). They are not the 6-core/11GB devbox, so this job does not count against the
+2-concurrent-build cap in the company engineering standards. Stating that explicitly because
+"adding CI" otherwise reads as adding load to a machine that has none to spare. **Confirm the host
+before enabling**, then this paragraph is a fact rather than an inference.
+
+**Runners are shared infrastructure, so enabling this job is the CTO's, not the squad's.** Match the
+shape [TEC-30](/TEC/issues/TEC-30) is establishing on `chhap` rather than inventing a second CI
+dialect — as of writing, TEC-30 has landed the deploy freeze (`cto/TEC-30-freeze-production-deploy`,
+`a6dd2aa`) and its test stage is still to come; whatever shape that stage takes, this file copies it.
+What the freeze already establishes, and this job follows: shell executors with `tags:`, no `image:`,
+explicit `rules:` rather than implicit defaults, and a header comment that says why the pipeline is
+shaped the way it is. Two products with two idioms is a tax on every engineer who moves between
+squads.
 
 | Step | Command | Fails the MR when |
 |---|---|---|
+| 0. Toolchain | `node -v`, `command -v pnpm`, `pnpm -v` | the runner lacks pnpm, or its Node major is outside Astro's `engines` |
 | 1. Install | `pnpm install --frozen-lockfile` | the lockfile and `package.json` disagree |
 | 2. Types and templates | `pnpm check` → `astro check` | any TS or `.astro` template diagnostic. Already a script in `package.json`; nothing to add. |
 | 3. Build | `pnpm build` → `astro build` | the static build errors. `CLAUDE.md` already requires a clean `pnpm build`; this makes it enforced rather than remembered. |
-| 4. HTML and structural a11y | `html-validate dist/**/*.html` | invalid HTML, or a violation of the structural rules below |
+| 4. HTML and structural a11y | `pnpm exec html-validate "dist/**/*.html"` | invalid HTML, or a violation of the structural rules below |
+| 5. Internal links | link check over `dist/` (§7.1.1) | any internal `href` resolves to no emitted file |
 
-Step 4 is the only new dependency (`html-validate`, dev-only, pure Node, **no browser**). It runs
-over the built output, so it checks what actually ships, not the source. Configure from the
-`recommended` and `a11y` presets, and pin these explicitly — they map to the §4 bar and to real
-defects in today's code:
+Steps 4 and 5 are the only new dependencies — both dev-only, both pure Node, **neither needs a
+browser**, which is what keeps this job on the existing executor and out of §7.2's deferred pile.
+Step 4 runs over the built output, so it checks what actually ships, not the source. Configure
+`html-validate` from the `recommended` and `a11y` presets, and pin these explicitly — they map to
+the §4 bar and to real defects in today's code:
 
 - one `<h1>` per document, no skipped heading levels
 - `lang` present on `<html>`; `alt` present on every `<img>` (`wcag/h37`)
@@ -541,6 +674,31 @@ defects in today's code:
 Exact rule ids and preset composition get pinned when the job is written; the list above is the
 intent, and `html-validate`'s WCAG support table is the reference
 (https://html-validate.org/wcag.html).
+
+#### 7.1.1 Internal link check (step 5)
+
+Adopted on the CTO's recommendation, and it is the right call for a specific reason: **this spec is
+what makes the repo need it.** Today there is one route and every `href` is a same-page anchor that
+cannot 404. §1 turns that into eight routes that cross-link each other, under a `trailingSlash`
+policy §1 pins deliberately — so the most likely regression in this repo is now a link to
+`/business` where the build emits `/business/index.html`, or a stale `#anchor` after a section is
+renamed. `html-validate` cannot see any of it: it validates documents, not the graph between them.
+
+What it asserts, over `dist/` after step 3:
+
+- every internal `href` resolves to a file the build actually emitted, under the configured
+  `trailingSlash` and `build.format: 'directory'` (§1) — including the nav, the footer, and every
+  in-copy cross-link
+- every same-page `#fragment` resolves to an `id` present in that document — this covers
+  `/help/#contact`, which §1 keeps as an anchor rather than a route, and the skip link's `#main`
+- `mailto:` and any future external `href` are **checked for syntax, not fetched**. The job makes no
+  network requests: a CI gate that depends on a third party being up is a CI gate that fails for
+  reasons unrelated to the merge request
+
+Implementation is a short Node script over the emitted HTML, or a small dev-only dependency —
+either is acceptable; the assertion above is the requirement. It must **not** be a crawler that
+starts a server. Excluded from the check: `/404`, which is reachable by CDN error document rather
+than by link (§1), and any `[DECISION: …]` placeholder that is deliberately not yet a link.
 
 ### 7.2 Explicitly deferred, with the reason
 
@@ -576,8 +734,13 @@ build ticket does not reopen them:
 2. Contact is a section of `/help/` (`/help/#contact`), not a seventh nav route. The handoff's page
    plan says "Help/Contact" as one page.
 3. `build.format: 'directory'` and `trailingSlash` set explicitly in config rather than inherited.
-4. One React island, hydrated with `client:media`, not `client:load`.
-5. Mobile nav is a disclosure, not a modal: no focus trap.
+4. **No React, and no client framework at all.** Measured, not preferred: 70,172 bytes gzipped of
+   JavaScript ships today to run 836 bytes of menu component (§3.4). The dependency and the
+   integration come out; the menu becomes ~15 lines of vanilla script inside `SiteHeader.astro`.
+   *(Revised after CTO review. The first revision kept one island on `client:media`; the measurement
+   made that the wrong answer, not merely a smaller version of it.)*
+5. Mobile nav is a disclosure, not a modal: no focus trap. The button and the panel are both
+   `SiteHeader.astro` markup; the script toggles attributes on them and renders nothing.
 6. The FAQ is `<details>`/`<summary>`, not an island.
 7. No contact form in v1 — a form implies a backend, which the handoff's stack decision excludes.
 8. English only in v1; `/ne/` reserved, not built.
@@ -600,6 +763,9 @@ Defects in `main` today that this spec obliges the build to fix, gathered in one
 - [ ] Nav array duplicated in `index.astro` and `MenuButton.tsx` (§3.2)
 - [ ] Five unnamed `<section>` landmarks on the home page (§4.1)
 - [ ] No skip link (§4.3)
-- [ ] `client:load` on a control that is invisible above 900px (§3.4)
+- [ ] **70KB gzipped of React ships to run an 836-byte menu, and `client:load` downloads it for
+      desktop visitors who cannot see the control** — remove React, `@astrojs/react`, `react-dom`,
+      both `@types` packages, the `react()` integration, and `MenuButton.tsx` (§3.4, §4.7)
 - [ ] No `404.astro` (§1)
 - [ ] No canonical, no per-route description, no robots policy (§4.8)
+- [ ] No `.gitlab-ci.yml` at all — nothing asserts that this repo compiles (§7)

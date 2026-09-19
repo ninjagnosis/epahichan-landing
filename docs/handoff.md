@@ -58,3 +58,11 @@ responsive model, a numeric accessibility and performance bar, the claims bounda
 checklist, what remains blocked on owner decisions, and the CI gate this repo needs before it takes
 more application code. Read it before building any page. This handoff stays the product source of
 truth; the spec does not replace it.
+
+**One deliberate deviation, recorded here so it is not read as drift.** The stack note above limits
+React to the mobile-navigation toggle. The spec removes React from this repo altogether (§3.4),
+because that toggle was measured in the committed build output: **70,172 bytes gzipped of
+JavaScript ship to run an 836-byte component**, of which 66,827 is the react-dom client runtime.
+The replacement is roughly fifteen lines of vanilla script inside `SiteHeader.astro` — same
+keyboard contract, same accessible disclosure, under 1KB. Everything else in the stack decision
+stands unchanged: Astro static output, TypeScript, Vite, no backend, no analytics, no account flow.
