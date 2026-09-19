@@ -157,8 +157,8 @@ One paragraph. It carries the legal sentence. No call to action follows it.
 
 > नेपालको कानूनले डिजिटल हस्ताक्षरलाई मान्यता दिन्छ: **विद्युतीय (इलेक्ट्रोनिक) कारोबार ऐन, २०६३** को
 > **दफा ५** अनुसार, प्रचलित कानूनले सही गर्नुपर्ने भनी तोकेको अवस्थामा, ऐन तथा अन्तर्गतका नियमले तोकेको
-> प्रक्रिया पूरा गरी गरिएको डिजिटल हस्ताक्षरको पनि कानूनी मान्यता हुन्छ। ePahichan त्यही प्रक्रियालाई
-> सर्वसाधारणको पहुँचमा ल्याउन बनेको हो।
+> प्रक्रिया पूरा गरी गरिएको डिजिटल हस्ताक्षरको पनि कानूनी मान्यता हुन्छ। डिजिटल हस्ताक्षरलाई
+> सर्वसाधारणको पहुँचमा ल्याउन ePahichan बनेको हो।
 
 ---
 
@@ -281,7 +281,7 @@ One paragraph. It carries the legal sentence. No call to action follows it.
 > Nepali law recognises digital signatures: under **Section 5** of the **Electronic Transactions
 > Act, 2063**, where prevailing law requires something to be signed, a digital signature made by
 > following the procedures laid down in the Act and its Rules also has legal validity. ePahichan
-> exists to bring that process within reach of ordinary people.
+> exists to bring digital signatures within reach of ordinary people.
 
 ---
 
@@ -503,7 +503,46 @@ the h1's "सय वर्षपछि पनि जाँच्न सकिन
 cryptographic strength. See 7.2 — I think this is acceptable for a dev URL and worth a decision
 before any public launch.
 
-### 6.5 Accessibility bar (method carried over from the cancelled TEC-31 spec)
+### 6.5 No operator is named — and `AGENTS.md:13` in this repo says the opposite
+
+`AGENTS.md:13` still carries the original scaffold's rule: *the operator's role as issuing CA must be
+disclosed accurately where legal, certificate-policy, or contractual context requires it.* The owner
+has overruled that half of the line — **ePahichan only, everywhere** — and the CTO has confirmed the
+ticket wins and the file is stale. Correcting `AGENTS.md` itself is TEC-45 review scope, not this
+ticket; this note exists so nobody implementing from this document re-derives the old rule from the
+file and adds a disclosure line to the closing paragraph.
+
+**The surviving half of that rule is the sharp one:** do not imply ePahichan is the issuing CA —
+while also not naming who is. The page gets through it by never discussing issuance at all. It is a
+public-awareness page, not a certificate policy; it has no reason to name an issuer. The two places
+this was load-bearing:
+
+- The note under the demo says *"चाबीलाई नामसँग जोड्ने काम प्रमाणपत्रले गर्छ"* / *"Tying a key to a
+  name is what a certificate does."* Subject is the certificate, not whoever issues it. See 6.2a for
+  the stronger sentence that was rejected.
+- The closing paragraph's last sentence was *"ePahichan brings that process within reach"*, where
+  *that process* was the Act's procedure. Narrowed to *"brings digital signatures within reach"*, so
+  it cannot be read as a claim that we operate the Act's certification machinery. Same meaning to a
+  reader; one fewer inference available to a hostile one.
+
+**Checks, both greppable:**
+
+```sh
+# 1. the naming rule — must return nothing
+grep -rniE 'radiant|\bncc\b' src/
+# 2. same over docs/ — the only permitted hits are the two command lines printed here
+grep -rniE 'radiant|\bncc\b' docs/
+# 3. every mention of an authority must be the timestamp one, never a certifying one
+grep -rniE 'certifying authority|प्रमाणीकरण निकाय' src/
+```
+
+Checks 1 and 2 are the naming rule. Check 3 catches the failure mode this subsection is about: the
+copy's only `authority` / `निकाय` is the **timestamp** authority in 2.3 / 3.3, which is a different
+body and is deliberately left unnamed too. All three pass on this branch as written — §30's
+*"Certifying Authority"* is quoted in 5.5 of this document, which is the citation record, and never
+reaches the page.
+
+### 6.6 Accessibility bar (method carried over from the cancelled TEC-31 spec)
 
 - Verification pass/fail carries a **text label** in both languages (2.3 / 3.3), never colour alone.
   This is TEC-48 AC #4 and the strings are supplied here so it can be met.
@@ -556,11 +595,17 @@ one, for the reason in 7.1. If someone with browser access wants to source it: e
 setting, two people, a counter or table between them, 3:2, Unsplash or Pexels, and write both alt
 texts. The page works fine without it.
 
-### 7.5 Not blocked, recorded as closed
+### 7.5 The unregistered domain still appears in `docs/handoff.md` — **owner: the CTO**
 
-The placeholder contact address on the unregistered domain appears nowhere in this document — not
-even as an example, so that a grep for it stays clean. With no form and no call to action in v1
-there is no contact surface at all, so the issue never arises on this page.
+It appears nowhere in *this* document — not even as an example, so that a grep for it stays clean —
+and with no form and no call to action in v1 the page has no contact surface at all. But the repo is
+not clean: `docs/handoff.md` lines 27, 28 and 51 still carry `hello@epahichan.com.np` and two
+subdomains of the unregistered domain, described as things we operate.
+
+That file is the discarded handoff the board has set aside, and rewriting or removing it is a
+decision above this ticket — it is the same class of stale-scaffold problem as `AGENTS.md:13`
+(6.5). Nothing in it reaches the landing page, so it does not block a dev URL. **Action:** decide
+whether `docs/handoff.md` is deleted or marked superseded, alongside the `AGENTS.md` correction.
 
 ---
 
@@ -568,12 +613,13 @@ there is no contact surface at all, so the issue never arises on this page.
 
 | Who | What they need from this document |
 |---|---|
-| **TEC-45** (Engineer 1) | All copy in sections 2 and 3 → `i18n.ts` with `ne`/`en` keys; the `photos.ts` module in section 4; the two `.jpg` files copied from the Airfone repo; the heading structure in 6.5 |
+| **TEC-45** (Engineer 1) | All copy in sections 2 and 3 → `i18n.ts` with `ne`/`en` keys; the `photos.ts` module in section 4; the two `.jpg` files copied from the Airfone repo; the heading structure in 6.6. **Also 6.5** — `AGENTS.md:13` is stale, do not add an operator disclosure, and correcting the file is your review scope |
 | **TEC-48** (Engineer 2) | The four step captions, the pre-filled contract sentence, the pass/fail/unsigned labels, the **timestamp caption**, and the closing note under the demo — all in 2.3 / 3.3. The timestamp caption is the Round 3 wording this ticket was told to wait for |
-| **ePahichan QA** | Section 6 is the test plan: verify each of the nine claims is actually on the page and actually supported. Plus 7.1 |
+| **ePahichan QA** | Section 6 is the test plan: verify each of the nine claims is actually on the page and actually supported. Plus the two greps in 6.5, and 7.1 |
 
 Naming: **ePahichan**, everywhere, in both languages. No other organisation is named anywhere on
-this page or in this document.
+this page or in this document — not in the legal paragraph, not in a footnote. `AGENTS.md:13` says
+otherwise and is stale; see 6.5.
 
 Brand: no colour is named in this copy. If the shell needs one for the pass/fail states, use a token
 from `BRAND.md` — never a hex value in content.
