@@ -49,3 +49,12 @@ Build the initial responsive ePahichan landing page from this handoff. Start wit
 - React is limited to the accessible mobile-navigation toggle; the page has no backend, analytics, account flow, or production API integration.
 - The contact call to action is explicitly an interest channel, not a representation that product access is currently available.
 - `hello@epahichan.com.np` is a visible placeholder destination and must be confirmed or replaced before public deployment.
+
+## Decision-complete IA and content spec
+
+`docs/landing-ia-and-content-spec.md` turns the page plan above into the buildable version: the
+seven pages as real routes, per-page section outlines with drafted copy, the navigation and
+responsive model, a numeric accessibility and performance bar, the claims boundary as a reviewable
+checklist, what remains blocked on owner decisions, and the CI gate this repo needs before it takes
+more application code. Read it before building any page. This handoff stays the product source of
+truth; the spec does not replace it.
