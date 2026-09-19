@@ -525,7 +525,7 @@ this was load-bearing:
   it cannot be read as a claim that we operate the Act's certification machinery. Same meaning to a
   reader; one fewer inference available to a hostile one.
 
-**Checks, both greppable:**
+**Checks, all three greppable:**
 
 ```sh
 # 1. the naming rule — must return nothing
