@@ -29,6 +29,17 @@ a {
   color: inherit;
 }
 
+/*
+  Keyboard focus is the only affordance a keyboard visitor gets, so it is based
+  here once and every later component inherits it. The brand ramp inverts
+  between schemes (BRAND.md) — --brand-ink in light, --brand-lift in dark — so
+  the override lives in the dark block below, never in tokens.css.
+*/
+:focus-visible {
+  outline: 2px solid var(--brand-ink);
+  outline-offset: 3px;
+}
+
 h1,
 h2,
 h3 {
@@ -159,10 +170,18 @@ main p {
   .mark {
     background-color: var(--brand-lift);
   }
+
+  :focus-visible {
+    outline-color: var(--brand-lift);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
   }
 }
