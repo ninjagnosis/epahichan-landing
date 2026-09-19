@@ -58,16 +58,35 @@ Computed with the WCAG 2.x relative-luminance formula
 | ink / paper (light) | 17.96:1 |
 | ink-muted / paper (light) | 8.17:1 |
 | ink / surface (light) | 16.76:1 |
-| brand-ink / paper (light lang-switch hover, mark) | 7.10:1 |
+| brand-ink / paper (light lang-switch hover, mark, focus ring) | 7.10:1 |
 | night-ink / night (dark) | 16.69:1 |
 | night-muted / night (dark) | 9.13:1 |
-| brand-lift / night (dark lang-switch hover, mark) | 5.38:1 |
+| brand-lift / night (dark lang-switch hover, mark, focus ring) | 5.38:1 |
 
 All pairs clear the 4.5:1 minimum with margin. `--line` is used only for
 1px borders, never for text, so it is not a text-contrast pair. The
 brand-ink and brand-lift ratios are carried over unchanged from BRAND.md
 (contrast between two fixed colors doesn't depend on which one is drawn as
 foreground vs. background, so the same figures apply here as there).
+
+### Focus ring
+
+Keyboard focus is based once in `global.css` on `:focus-visible`, so every
+later component inherits it rather than re-inventing one:
+
+| Scheme | Ring colour | Drawn against | Ratio |
+|---|---|---|---|
+| Light | `--brand-ink` `#B30712` | `--paper` `#FFFFFF` (page background) | 7.10:1 |
+| Dark | `--brand-lift` `#FF3A3E` | `--night` `#0D1015` (page background) | 5.38:1 |
+
+Same formula and the same script as the table above. The ring colour follows
+the brand ramp's scheme inversion, so the dark-scheme override lives in the
+`prefers-color-scheme: dark` block, never in `tokens.css`.
+
+`outline-offset: 3px` matters to those numbers: the ring is separated from the
+element it surrounds by 3px of page background, so the ratio that governs its
+visibility is ring-against-background, listed above — not ring-against-mark,
+which would be `--brand-ink` on `--brand-ink` (1:1) if the ring sat flush.
 
 ## Type scale
 
@@ -94,7 +113,10 @@ Line height: 1.55 body, 1.2 headings. Letter spacing: 0 everywhere. No
 - Only `color`/`border-color` transitions, 150ms ease-out, on the language
   switch.
 - No `@keyframes`, no transform-based hover effects.
-- `prefers-reduced-motion: reduce` disables all transitions.
+- `html` sets `scroll-behavior: smooth`.
+- `prefers-reduced-motion: reduce` disables all transitions **and** returns
+  `scroll-behavior` to `auto` — the transition reset alone does not cover
+  scrolling.
 
 ## Layout
 
