@@ -1,0 +1,243 @@
+.sign-demo {
+  max-width: var(--max-width);
+  margin: 64px auto 0;
+  padding: 0 var(--gutter);
+}
+
+.sign-demo-intro {
+  color: var(--ink-muted);
+  margin-top: 8px;
+  max-width: 640px;
+}
+
+.sign-demo-alg {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.sign-demo-alg-label {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sign-demo-panel {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+}
+
+.sign-demo-panel label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.sign-demo-panel textarea {
+  width: 100%;
+  font: inherit;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--paper);
+  color: var(--ink);
+  resize: vertical;
+}
+
+.sign-demo-steps {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.sign-demo-steps li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.sign-demo-steps p {
+  margin: 0;
+}
+
+.sign-demo-step-numeral {
+  flex: none;
+  width: 1.6em;
+  font-weight: 700;
+  color: var(--brand-ink);
+}
+
+.sign-demo-parties {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .sign-demo-parties {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.sign-demo-party {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  padding: 20px;
+}
+
+.sign-demo-party h3 {
+  margin-bottom: 12px;
+}
+
+.sign-demo-party button,
+.sign-demo-reset {
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.sign-demo-party button:not(:disabled):hover,
+.sign-demo-reset:hover {
+  border-color: var(--brand-ink);
+  color: var(--brand-ink);
+  transition: border-color 150ms ease-out, color 150ms ease-out;
+}
+
+.sign-demo-party button:disabled {
+  color: var(--ink-muted);
+  cursor: not-allowed;
+}
+
+.sign-demo-status {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  width: fit-content;
+}
+
+.sign-demo-status-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.sign-demo-status[data-state='pending'] {
+  color: var(--ink-muted);
+}
+
+.sign-demo-status[data-state='verified'] {
+  color: var(--ink);
+}
+
+.sign-demo-status[data-state='failed'] {
+  color: var(--brand-ink);
+  border-color: var(--brand-ink);
+  border-style: dashed;
+}
+
+.sign-demo-timestamp {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.sign-demo-timestamp-caption {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--ink-muted);
+  max-width: 640px;
+}
+
+.sign-demo-reset {
+  margin-top: 24px;
+}
+
+.sign-demo-closing-note {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-muted);
+  max-width: 640px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sign-demo-panel {
+    background: var(--night);
+    border-color: var(--night-line);
+  }
+
+  .sign-demo-panel textarea {
+    background: var(--night);
+    border-color: var(--night-line);
+    color: var(--night-ink);
+  }
+
+  .sign-demo-intro,
+  .sign-demo-alg,
+  .sign-demo-timestamp,
+  .sign-demo-timestamp-caption,
+  .sign-demo-closing-note {
+    color: var(--night-muted);
+  }
+
+  .sign-demo-alg-label {
+    color: var(--night-ink);
+  }
+
+  .sign-demo-step-numeral {
+    color: var(--brand-lift);
+  }
+
+  .sign-demo-closing-note {
+    border-color: var(--night-line);
+  }
+
+  .sign-demo-party,
+  .sign-demo-status {
+    border-color: var(--night-line);
+  }
+
+  .sign-demo-party button,
+  .sign-demo-reset {
+    border-color: var(--night-line);
+    background: var(--night);
+    color: var(--night-ink);
+  }
+
+  .sign-demo-party button:not(:disabled):hover,
+  .sign-demo-reset:hover {
+    border-color: var(--brand-lift);
+    color: var(--brand-lift);
+  }
+
+  .sign-demo-party button:disabled {
+    color: var(--night-muted);
+  }
+
+  .sign-demo-status[data-state='pending'] {
+    color: var(--night-muted);
+  }
+
+  .sign-demo-status[data-state='verified'] {
+    color: var(--night-ink);
+  }
+
+  .sign-demo-status[data-state='failed'] {
+    color: var(--brand-lift);
+    border-color: var(--brand-lift);
+  }
+}
