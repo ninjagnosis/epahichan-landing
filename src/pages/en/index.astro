@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SignDemo from '../../components/sign-demo/SignDemo.astro';
 import { t } from '../../i18n';
 
 const locale = 'en' as const;
@@ -9,4 +10,5 @@ const locale = 'en' as const;
     <h1>ePahichan</h1>
     <p>{t[locale].comingSoon}</p>
   </main>
+  <SignDemo locale={locale} />
 </BaseLayout>

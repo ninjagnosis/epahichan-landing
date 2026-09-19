@@ -1,0 +1,191 @@
+---
+import { t, type Locale } from '../../i18n';
+import './sign-demo.css';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const strings = t[locale].signDemo;
+const numerals = locale === 'ne' ? ['१', '२', '३', '४'] : ['1', '2', '3', '4'];
+---
+
+<section class="sign-demo" aria-labelledby="sign-demo-heading">
+  <h2 id="sign-demo-heading">{strings.heading}</h2>
+  <p class="sign-demo-intro">{strings.intro}</p>
+
+  <ol class="sign-demo-steps">
+    {
+      strings.steps.map((step, i) => (
+        <li>
+          <span class="sign-demo-step-numeral" aria-hidden="true">
+            {numerals[i]}
+          </span>
+          <p>{step}</p>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="sign-demo-alg">
+    <span class="sign-demo-alg-label">{strings.algorithmLabel}</span>
+    <span id="sign-demo-alg-value">{strings.algDetectingLabel}</span>
+  </p>
+
+  <div class="sign-demo-panel">
+    <label for="sign-demo-text">{strings.contractLabel}</label>
+    <textarea id="sign-demo-text" rows="3">{strings.contractDefaultText}</textarea>
+  </div>
+
+  <div class="sign-demo-parties">
+    <article class="sign-demo-party">
+      <h3>{strings.munaLabel}</h3>
+      <button type="button" id="sign-demo-muna-sign">{strings.signAsMunaButton}</button>
+      <p
+        class="sign-demo-status"
+        id="sign-demo-muna-status"
+        role="status"
+        aria-live="polite"
+        data-state="pending"
+      >
+        <span class="sign-demo-status-icon" aria-hidden="true">{strings.statusPendingIcon}</span>
+        <span class="sign-demo-status-text">{strings.statusPendingLabel}</span>
+      </p>
+      <p class="sign-demo-timestamp" id="sign-demo-muna-timestamp" hidden></p>
+    </article>
+
+    <article class="sign-demo-party">
+      <h3>{strings.madanLabel}</h3>
+      <button type="button" id="sign-demo-madan-sign" disabled>{strings.counterSignButton}</button>
+      <p
+        class="sign-demo-status"
+        id="sign-demo-madan-status"
+        role="status"
+        aria-live="polite"
+        data-state="pending"
+      >
+        <span class="sign-demo-status-icon" aria-hidden="true">{strings.statusPendingIcon}</span>
+        <span class="sign-demo-status-text">{strings.statusPendingLabel}</span>
+      </p>
+      <p class="sign-demo-timestamp" id="sign-demo-madan-timestamp" hidden></p>
+    </article>
+  </div>
+
+  <p class="sign-demo-timestamp-caption">{strings.timestampCaption}</p>
+
+  <button type="button" class="sign-demo-reset" id="sign-demo-reset">{strings.resetButton}</button>
+
+  <p class="sign-demo-closing-note">{strings.closingNote}</p>
+</section>
+
+<script>
+  import { t, type Locale } from '../../i18n';
+  import {
+    counterSignAsMadan,
+    initState,
+    resetState,
+    signAsMuna,
+    verifyAll,
+    type DemoState,
+    type VerificationState,
+  } from './state';
+  import type { Alg } from './crypto';
+
+  const root = document.querySelector<HTMLElement>('.sign-demo');
+  if (root) {
+    const locale = (document.documentElement.lang as Locale) || 'ne';
+    const strings = t[locale].signDemo;
+
+    const textEl = root.querySelector<HTMLTextAreaElement>('#sign-demo-text')!;
+    const algValueEl = root.querySelector<HTMLElement>('#sign-demo-alg-value')!;
+    const munaSignBtn = root.querySelector<HTMLButtonElement>('#sign-demo-muna-sign')!;
+    const madanSignBtn = root.querySelector<HTMLButtonElement>('#sign-demo-madan-sign')!;
+    const resetBtn = root.querySelector<HTMLButtonElement>('#sign-demo-reset')!;
+    const munaStatus = root.querySelector<HTMLElement>('#sign-demo-muna-status')!;
+    const madanStatus = root.querySelector<HTMLElement>('#sign-demo-madan-status')!;
+    const munaTimestamp = root.querySelector<HTMLElement>('#sign-demo-muna-timestamp')!;
+    const madanTimestamp = root.querySelector<HTMLElement>('#sign-demo-madan-timestamp')!;
+
+    const defaultText = strings.contractDefaultText;
+
+    // AC 2: force the ECDSA fallback path with ?alg=ecdsa — no monkeypatching
+    // crypto.subtle, just a different value fed into the same code path.
+    const forcedAlg: Alg | null =
+      new URLSearchParams(location.search).get('alg') === 'ecdsa' ? 'ECDSA' : null;
+
+    let state: DemoState | null = null;
+
+    function renderStatus(el: HTMLElement, v: VerificationState) {
+      const icon = el.querySelector<HTMLElement>('.sign-demo-status-icon')!;
+      const text = el.querySelector<HTMLElement>('.sign-demo-status-text')!;
+      el.dataset.state = v;
+      if (v === 'pending') {
+        icon.textContent = strings.statusPendingIcon;
+        text.textContent = strings.statusPendingLabel;
+      } else if (v === 'verified') {
+        icon.textContent = strings.statusVerifiedIcon;
+        text.textContent = strings.statusVerifiedLabel;
+      } else {
+        icon.textContent = strings.statusFailedIcon;
+        text.textContent = strings.statusFailedLabel;
+      }
+    }
+
+    function renderTimestamp(el: HTMLElement, date: Date | null) {
+      if (!date) {
+        el.hidden = true;
+        el.textContent = '';
+        return;
+      }
+      el.hidden = false;
+      const formatted = date.toLocaleString(locale === 'ne' ? 'ne-NP' : 'en-US');
+      el.textContent = `${strings.timestampLabel} ${formatted}`;
+    }
+
+    async function refresh() {
+      if (!state) return;
+      const v = await verifyAll(state);
+      renderStatus(munaStatus, v.muna);
+      renderStatus(madanStatus, v.madan);
+      renderTimestamp(munaTimestamp, state.munaSig?.signedAt ?? null);
+      renderTimestamp(madanTimestamp, state.madanSig?.signedAt ?? null);
+      munaSignBtn.disabled = !!state.munaSig;
+      madanSignBtn.disabled = !state.munaSig || !!state.madanSig;
+    }
+
+    async function boot() {
+      state = await initState(defaultText, forcedAlg);
+      algValueEl.textContent =
+        state.alg === 'Ed25519' ? strings.algEd25519Label : strings.algEcdsaLabel;
+      textEl.value = defaultText;
+      await refresh();
+    }
+
+    munaSignBtn.addEventListener('click', async () => {
+      if (!state || state.munaSig) return;
+      state = await signAsMuna(state);
+      await refresh();
+    });
+
+    madanSignBtn.addEventListener('click', async () => {
+      if (!state || !state.munaSig || state.madanSig) return;
+      state = await counterSignAsMadan(state);
+      await refresh();
+    });
+
+    resetBtn.addEventListener('click', async () => {
+      if (!state) return;
+      state = await resetState(state, defaultText);
+      textEl.value = defaultText;
+      await refresh();
+    });
+
+    textEl.addEventListener('input', async () => {
+      if (!state) return;
+      state = { ...state, text: textEl.value };
+      await refresh();
+    });
+
+    void boot();
+  }
+</script>
