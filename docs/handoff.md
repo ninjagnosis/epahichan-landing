@@ -1,0 +1,51 @@
+# ePahichan Web Handoff
+
+## Product intent
+
+ePahichan is the unified public-facing brand for a digital-trust ecosystem. Individuals use ePahichan through a mobile-first Flutter application; banks, government, enterprises, and software providers integrate its trust services into their own applications. The internal trust platform, CA core, HSM, and delegated channels remain implementation details rather than public product navigation.
+
+## Public web information architecture
+
+Initial navigation:
+
+```text
+Platform | For Individuals | For Business | Developers | Trust & Security | Help | Contact
+```
+
+Initial page plan:
+
+1. Home: plain-language value proposition and three paths: individuals, organizations, and developers.
+2. Platform: high-level certificates, signatures, verification, and lifecycle capabilities.
+3. For Individuals: ePahichan's mobile-first role, without promising unavailable flows.
+4. For Business: integration value for banks, government, enterprises, and software providers; partners keep their own workflows.
+5. Developers: linkable home for future public documentation and sandbox.
+6. Trust & Security: high-level assurance story; reserve detailed issuer, policy, privacy, and legal information for reviewed content.
+7. Help/Contact: accessible contact and interest-registration path.
+
+Later public areas:
+
+- `developers.epahichan.com.np`: public API docs plus authenticated sandbox and developer console.
+- `verify.epahichan.com.np`: public certificate/signature verification, only after authoritative backend support exists.
+- Legal, privacy, certificate-policy/CPS, vulnerability reporting, and status pages after review.
+
+## Brand and disclosure guidance
+
+Lead with ePahichan. Do not use internal service names or expose infrastructure details in ordinary marketing copy. Where legally required, make the operator and certificate issuer clear, for example in reviewed footer, policy, agreement, and certificate materials. Exact wording is pending legal/CPS approval.
+
+## Web stack and delivery model
+
+- Astro static shell + React interactive components + TypeScript/Vite.
+- Static output; content-hashed assets are CDN-delivered and immutable.
+- No backend, authentication, tracking, or production APIs are needed for the initial landing page.
+- The full product will later use shared API contracts to generate TypeScript clients for static React applications and Dart clients for Flutter.
+
+## First implementation task
+
+Build the initial responsive ePahichan landing page from this handoff. Start with semantic, accessible, performance-conscious static content. Use original or neutral visual treatment until approved logo, palette, imagery, legal copy, and contact destination are supplied. Do not invent partnerships, compliance certifications, user metrics, pricing, availability guarantees, or issuer/legal claims.
+
+## Initial landing-page implementation decision
+
+- The first page is a single static Astro route with an original, neutral visual system.
+- React is limited to the accessible mobile-navigation toggle; the page has no backend, analytics, account flow, or production API integration.
+- The contact call to action is explicitly an interest channel, not a representation that product access is currently available.
+- `hello@epahichan.com.np` is a visible placeholder destination and must be confirmed or replaced before public deployment.
