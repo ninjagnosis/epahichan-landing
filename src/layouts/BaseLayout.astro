@@ -1,6 +1,35 @@
 ---
+import '@fontsource/mukta/400.css';
+import '@fontsource/mukta/600.css';
+import '@fontsource/noto-serif-devanagari/600.css';
+import '@fontsource/noto-serif-devanagari/700.css';
+import '../styles/tokens.css';
 import '../styles/global.css';
-const { title = 'ePahichan — Digital trust, made more approachable' } = Astro.props;
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import type { Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+  relPath: string;
+  title: string;
+}
+const { locale, relPath, title } = Astro.props;
 ---
+
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><meta name="description" content="ePahichan is being shaped as a simpler digital trust experience for people, organizations, and developers." /><meta name="theme-color" content="#092b29" /><title>{title}</title></head><body><slot /></body></html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#14171c" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/epahichan-mark-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/epahichan-mark-192.png" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <Header locale={locale} relPath={relPath} />
+    <slot />
+    <Footer locale={locale} />
+  </body>
+</html>
