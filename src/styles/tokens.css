@@ -1,0 +1,27 @@
+:root {
+  --paper: #ffffff;
+  --surface: #f6f7f9;
+  --ink: #14171c;
+  --ink-muted: #495058;
+  --line: #dee1e6;
+  /* Brand red measured from the board-supplied mark; see BRAND.md. */
+  --brand: #e31b23;
+  --brand-ink: #b30712;
+
+  --night: #0d1015;
+  --night-ink: #eef0f3;
+  --night-muted: #aeb4bd;
+  --night-line: #262b33;
+  --brand-lift: #ff3a3e;
+
+  --radius-control: 8px;
+  --radius-panel: 12px;
+  --max-width: 1120px;
+  --gutter: 16px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 32px;
+  }
+}

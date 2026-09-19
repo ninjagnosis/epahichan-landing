@@ -1,0 +1,20 @@
+---
+import { localePath, otherLocalePath, type Locale, t } from '../i18n';
+
+interface Props {
+  locale: Locale;
+  relPath: string;
+}
+const { locale, relPath } = Astro.props;
+const other = otherLocalePath(locale, relPath);
+const home = localePath(locale, '/');
+---
+
+<header class="site-header">
+  <a class="wordmark" href={home} aria-label="ePahichan">
+    <span class="mark" aria-hidden="true"></span>Pahichan
+  </a>
+  <a class="lang-switch" href={other.href} hreflang={other.locale} lang={other.locale}>
+    {t[locale].langSwitchLabel}
+  </a>
+</header>

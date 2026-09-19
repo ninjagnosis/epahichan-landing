@@ -1,0 +1,13 @@
+---
+import { t, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<footer class="site-footer">
+  <span class="wordmark" aria-hidden="true"><span class="mark"></span>Pahichan</span>
+  <span class="copyright">{t[locale].copyright}</span>
+</footer>
