@@ -3,6 +3,11 @@
 Single source of truth for tokens actually used in `src/`. If a value in the
 code isn't listed here, that's a bug — fix the code or extend this file.
 
+> **Shared with the product surfaces:** `PRODUCT-DESIGN.md` is the design
+> standard for the staff console, the ePahichan app and the developer platform.
+> This file stays this site's own implementation notes; where the two meet,
+> `BRAND.md` still decides colour.
+
 ## Fonts
 
 - Latin text: system font stack (`system-ui, sans-serif`). No extra
