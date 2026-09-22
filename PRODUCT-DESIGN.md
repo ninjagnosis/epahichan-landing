@@ -129,6 +129,12 @@ tables (no virtualisation — fine for small reference lists).
 Before adding a package not listed here, check it against the vetting rule and
 record it in this table.
 
+**Versions: latest stable, then pinned.** Adopt each package at its latest
+stable release compatible with the pinned Flutter SDK, pin it exactly, and
+review upgrades on a schedule (monthly) rather than letting them drift or
+freeze. A package that stops releasing is re-vetted, and replaced by its
+maintained successor where one exists.
+
 ## 7. Dates, money, language
 
 - **The authoritative date is Gregorian, ISO-8601, UTC** — in data, in APIs and
@@ -146,6 +152,40 @@ Same brand, typography principles, slop rules, states and copy rules. Stack per
 each repository's own instructions (Astro, TypeScript; no framework island
 without sign-off). Tokens as CSS custom properties mirroring `BRAND.md`.
 
+## 9. Web delivery (Flutter web)
+
+Every Flutter web build ships the same way, so a new app inherits a working
+pipeline instead of inventing one:
+
+1. A custom `web/flutter_bootstrap.js` carries `var cdnBase = "__CDN_BASE__";`
+   and, when the placeholder has been replaced, sets the loader's `assetBase`
+   and `entryPointBaseUrl` to it.
+2. CI runs `flutter build web --release` with build-time `--dart-define`
+   configuration only — no secret in any bundle.
+3. **Before compressing anything**, CI replaces `__CDN_BASE__` with an
+   **immutable, per-build prefix** (`https://<cdn>/<app>/web/<pipeline-id>/`).
+   Replacing after compression leaves the `.gz`/`.br` siblings holding the
+   raw placeholder — served to nearly every browser, pointing the app at
+   nothing, while an uncompressed `curl` shows no fault.
+4. Precompress: `gzip -9` and `brotli -q 11` for js, css, json, wasm, svg,
+   fonts and html over 1 KB; the origin serves them with `gzip_static` /
+   `brotli_static`.
+5. Publish the bundle to object storage behind the CDN with rclone (configured
+   through `RCLONE_CONFIG_*` environment variables); files under the prefix are
+   immutable and cached long. The origin serves only `index.html` and
+   `flutter_bootstrap.js`, on a short cache lifetime, so a deploy is the
+   origin pointing at a new prefix and a rollback is pointing back.
+6. The CDN is optional: with no bucket configured the build serves from its own
+   origin and nothing else changes.
+7. Mobile release builds are signed in CI and published to the same storage
+   with a `SHA256SUMS` file, announced in the team's channel.
+
+**Where each surface is served:** the ePahichan web app and the developer
+platform go through the public CDN. The **staff console is served from the
+internal origin behind the access proxy**, not the public CDN — its bundle holds
+no secret, but a public copy would advertise an internal surface's screens and
+API shape to anyone.
+
 ---
 
 ## Sources
@@ -162,5 +202,7 @@ without sign-off). Tokens as CSS custom properties mirroring `BRAND.md`.
   https://www.themasterly.com/blog/fintech-dashboard-design-guide ·
   https://adminlte.io/blog/fintech-dashboard-design-examples/
 - Data table design reference: https://www.setproduct.com/blog/data-table-ui-design
+- Flutter web: custom bootstrap and asset base —
+  https://docs.flutter.dev/platform-integration/web/initialization
 - Linear's interface redesign: https://linear.app/now/how-we-redesigned-the-linear-ui
 - Flutter web accessibility: https://docs.flutter.dev/ui/accessibility/web-accessibility
