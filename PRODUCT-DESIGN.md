@@ -180,11 +180,13 @@ pipeline instead of inventing one:
 7. Mobile release builds are signed in CI and published to the same storage
    with a `SHA256SUMS` file, announced in the team's channel.
 
-**Where each surface is served:** the ePahichan web app and the developer
-platform go through the public CDN. The **staff console is served from the
-internal origin behind the access proxy**, not the public CDN — its bundle holds
-no secret, but a public copy would advertise an internal surface's screens and
-API shape to anyone.
+**Every frontend is served through the CDN** — the ePahichan web app, the
+developer platform and the staff console alike. A bundle is compiled logic and
+holds no secret (enforced above), so publishing it discloses nothing an
+attacker could use; **the security boundary is the API**, which authenticates
+every request, and for the staff console the operator API additionally sits
+behind the access proxy with device certificates. Never rely on a bundle being
+hard to obtain.
 
 ---
 
