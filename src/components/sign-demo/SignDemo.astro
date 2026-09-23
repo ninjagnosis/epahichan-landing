@@ -33,8 +33,8 @@ const strings = t.signDemo;
         <Icon class="verdict-icon verdict-bad" name="lucide:x" aria-hidden="true" />
       </div>
       <p class="key-label">
-        <Icon name="lucide:key-round" aria-hidden="true" />
-        private key
+        <Icon name="lucide:signature" aria-hidden="true" />
+        digital signature
       </p>
       <p class="key-value" data-key="muna">—</p>
     </div>
@@ -86,8 +86,8 @@ const strings = t.signDemo;
         <Icon class="verdict-icon verdict-bad" name="lucide:x" aria-hidden="true" />
       </div>
       <p class="key-label">
-        <Icon name="lucide:key-round" aria-hidden="true" />
-        private key
+        <Icon name="lucide:signature" aria-hidden="true" />
+        digital signature
       </p>
       <p class="key-value" data-key="madan">—</p>
     </div>
@@ -139,11 +139,14 @@ const strings = t.signDemo;
       return shorten(new Uint8Array(digest));
     }
 
-    /* Fresh keys every run, so the printed fragment is never the same twice. */
-    async function keyPrefix(state: DemoState, who: 'muna' | 'madan') {
-      const raw = await crypto.subtle.exportKey('pkcs8', state[who].keys.privateKey);
-      return shorten(new Uint8Array(raw), 12);
-    }
+    /*
+      The signature itself, not the key that made it. Two reasons: a private
+      key is the one value that should never be displayed, and a PKCS#8
+      export begins with an algorithm identifier that is byte-identical for
+      every key of the same type — so the fragment shown was a constant
+      header, which is why Muna's and Madan's appeared to match.
+    */
+    const sigFragment = (bytes: Uint8Array | undefined) => (bytes ? shorten(bytes, 12) : '—');
 
     let signedPrint = '';
 
@@ -180,8 +183,8 @@ const strings = t.signDemo;
       verdict.muna.dataset.state = 'idle';
       verdict.madan.dataset.state = 'idle';
 
-      keyOut.muna.textContent = await keyPrefix(state, 'muna');
-      keyOut.madan.textContent = await keyPrefix(state, 'madan');
+      keyOut.muna.textContent = '—';
+      keyOut.madan.textContent = '—';
       narration.textContent = 'Muna and Madan each hold a private key that only they have.';
       await wait(1400);
 
@@ -192,11 +195,13 @@ const strings = t.signDemo;
       await wait(1200);
 
       state = await signAsMuna(state);
+      keyOut.muna.textContent = sigFragment(state.munaSig?.bytes);
       seal.muna.classList.add('is-on');
       await refresh(state);
       await wait(1000);
 
       state = await counterSignAsMadan(state);
+      keyOut.madan.textContent = sigFragment(state.madanSig?.bytes);
       seal.madan.classList.add('is-on');
       await refresh(state);
 
