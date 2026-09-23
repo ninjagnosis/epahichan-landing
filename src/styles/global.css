@@ -10,13 +10,9 @@ body {
   margin: 0;
   color: var(--ink);
   background: var(--paper);
-  font-family: system-ui, sans-serif;
+  font-family: 'Poppins', system-ui, sans-serif;
   font-size: 18px;
   line-height: 1.55;
-}
-
-html[lang='ne'] body {
-  font-family: 'Mukta', system-ui, sans-serif;
 }
 
 @media (max-width: 480px) {
@@ -31,9 +27,7 @@ a {
 
 /*
   Keyboard focus is the only affordance a keyboard visitor gets, so it is based
-  here once and every later component inherits it. The brand ramp inverts
-  between schemes (BRAND.md) — --brand-ink in light, --brand-lift in dark — so
-  the override lives in the dark block below, never in tokens.css.
+  here once and every later component inherits it.
 */
 :focus-visible {
   outline: 2px solid var(--brand-ink);
@@ -46,12 +40,6 @@ h3 {
   line-height: 1.2;
   letter-spacing: 0;
   margin: 0;
-}
-
-html[lang='ne'] h1,
-html[lang='ne'] h2,
-html[lang='ne'] h3 {
-  font-family: 'Noto Serif Devanagari', 'Mukta', system-ui, sans-serif;
 }
 
 h1 {
@@ -69,8 +57,7 @@ h3 {
   font-weight: 600;
 }
 
-.site-header,
-.site-footer {
+.site-header {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--gutter);
@@ -79,16 +66,40 @@ h3 {
   justify-content: space-between;
 }
 
+/*
+  The header sits inside the hero photograph rather than on a bar above it —
+  no background, no rule beneath it. It is absolute rather than fixed, so it
+  simply scrolls away with the photo; that avoids needing a scroll-triggered
+  colour swap to stay legible once the white page arrives underneath.
+*/
 .site-header {
-  height: 72px;
-  border-bottom: 1px solid var(--line);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: 88px;
+  color: #ffffff;
 }
 
-.site-footer {
-  height: 72px;
-  border-top: 1px solid var(--line);
-  font-size: 14px;
-  color: var(--ink-muted);
+/*
+  The mark keeps its brand red over the photograph — it is the one red thing
+  in the hero besides the action, which is why the photograph itself is left
+  near-neutral. The wordmark beside it stays white.
+*/
+.site-header .mark {
+  background-color: var(--brand);
+}
+
+.site-header .lang-switch {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+}
+
+.site-header .lang-switch:hover {
+  border-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
 }
 
 .wordmark {
@@ -128,52 +139,18 @@ h3 {
   color: var(--brand-ink);
 }
 
+/*
+  Deliberately unconstrained: the hero photograph bleeds to the viewport edge,
+  so the measure belongs to each section rather than to a wrapper around all
+  of them. Every section below sets its own max-width and gutter.
+*/
 main {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 96px var(--gutter);
+  padding: 0;
 }
 
 main p {
   color: var(--ink-muted);
   margin-top: 16px;
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    color: var(--night-ink);
-    background: var(--night);
-  }
-
-  .site-header,
-  .site-footer {
-    border-color: var(--night-line);
-  }
-
-  .site-footer {
-    color: var(--night-muted);
-  }
-
-  .lang-switch {
-    border-color: var(--night-line);
-  }
-
-  .lang-switch:hover {
-    border-color: var(--brand-lift);
-    color: var(--brand-lift);
-  }
-
-  main p {
-    color: var(--night-muted);
-  }
-
-  .mark {
-    background-color: var(--brand-lift);
-  }
-
-  :focus-visible {
-    outline-color: var(--brand-lift);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -183,5 +160,35 @@ main p {
 
   html {
     scroll-behavior: auto;
+  }
+}
+
+/*
+  Scroll reveal. The hidden state is scoped to an attribute that only the
+  inline script in BaseLayout sets, so a visitor with no JavaScript — or one
+  whose script fails — sees the page fully rendered rather than blank.
+  The hero is excluded: it has its own entrance and is above the fold anyway.
+*/
+html[data-reveal] main > section:not(.hero) {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+}
+
+html[data-reveal] main > section.is-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-reveal] main > section:not(.hero) {
+    opacity: 1;
+    transform: none;
+  }
+
+  html[data-reveal] main > section.is-visible {
+    transition: none;
   }
 }

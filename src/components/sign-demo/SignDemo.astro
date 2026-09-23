@@ -1,191 +1,220 @@
 ---
-import { t, type Locale } from '../../i18n';
+import { Icon } from 'astro-icon/components';
+import { t } from '../../i18n';
 import './sign-demo.css';
 
-interface Props {
-  locale: Locale;
-}
-const { locale } = Astro.props;
-const strings = t[locale].signDemo;
-const numerals = locale === 'ne' ? ['१', '२', '३', '४'] : ['1', '2', '3', '4'];
+const strings = t.signDemo;
 ---
 
+{/*
+  Signs itself once on load with freshly generated keys and settles in the
+  valid state. From there the document is the reader's to break: editing it
+  re-verifies on every keystroke, and both signatures fail the moment the
+  bytes stop matching what was signed.
+
+  The cryptography is real — a failure here is crypto.subtle.verify returning
+  false against the edited bytes, not a scripted red cross.
+*/}
 <section class="sign-demo" aria-labelledby="sign-demo-heading">
-  <h2 id="sign-demo-heading">{strings.heading}</h2>
-  <p class="sign-demo-intro">{strings.intro}</p>
+  <div class="sign-demo-head">
+    <h2 id="sign-demo-heading">{strings.heading}</h2>
+    <button type="button" class="replay" data-replay>
+      <Icon name="lucide:rotate-ccw" aria-hidden="true" />
+      Reset
+    </button>
+  </div>
 
-  <ol class="sign-demo-steps">
-    {
-      strings.steps.map((step, i) => (
-        <li>
-          <span class="sign-demo-step-numeral" aria-hidden="true">
-            {numerals[i]}
+  <div class="stage" data-stage data-original={strings.contractDefaultText}>
+    <div class="party">
+      <div class="avatar" aria-hidden="true"><Icon name="lucide:user-round" /></div>
+      <p class="party-name">Muna</p>
+      <div class="verdict" data-verdict="muna" data-state="idle">
+        <Icon class="verdict-icon verdict-ok" name="lucide:check" aria-hidden="true" />
+        <Icon class="verdict-icon verdict-bad" name="lucide:x" aria-hidden="true" />
+      </div>
+      <p class="key-label">
+        <Icon name="lucide:key-round" aria-hidden="true" />
+        private key
+      </p>
+      <p class="key-value" data-key="muna">—</p>
+    </div>
+
+    <div class="doc">
+      <div class="doc-paper">
+        <textarea
+          class="doc-text"
+          data-doc-text
+          rows="3"
+          spellcheck="false"
+          aria-label="The signed document. Edit it to see both signatures stop matching."
+        ></textarea>
+        <div class="doc-seals">
+          <span class="seal" data-seal="muna" aria-hidden="true">
+            <Icon name="lucide:signature" />
+            Muna
           </span>
-          <p>{step}</p>
-        </li>
-      ))
-    }
-  </ol>
+          <span class="seal" data-seal="madan" aria-hidden="true">
+            <Icon name="lucide:signature" />
+            Madan
+          </span>
+        </div>
+      </div>
 
-  <p class="sign-demo-alg">
-    <span class="sign-demo-alg-label">{strings.algorithmLabel}</span>
-    <span id="sign-demo-alg-value">{strings.algDetectingLabel}</span>
-  </p>
+      <div class="prints">
+        <div class="print">
+          <p class="key-label">
+            <Icon name="lucide:lock" aria-hidden="true" />
+            fingerprint when signed
+          </p>
+          <p class="key-value" data-hash-original>—</p>
+        </div>
+        <div class="print">
+          <p class="key-label">
+            <Icon name="lucide:fingerprint" aria-hidden="true" />
+            fingerprint now
+          </p>
+          <p class="key-value" data-hash-now data-match="same">—</p>
+        </div>
+      </div>
+    </div>
 
-  <div class="sign-demo-panel">
-    <label for="sign-demo-text">{strings.contractLabel}</label>
-    <textarea id="sign-demo-text" rows="3">{strings.contractDefaultText}</textarea>
+    <div class="party">
+      <div class="avatar" aria-hidden="true"><Icon name="lucide:user-round" /></div>
+      <p class="party-name">Madan</p>
+      <div class="verdict" data-verdict="madan" data-state="idle">
+        <Icon class="verdict-icon verdict-ok" name="lucide:check" aria-hidden="true" />
+        <Icon class="verdict-icon verdict-bad" name="lucide:x" aria-hidden="true" />
+      </div>
+      <p class="key-label">
+        <Icon name="lucide:key-round" aria-hidden="true" />
+        private key
+      </p>
+      <p class="key-value" data-key="madan">—</p>
+    </div>
   </div>
 
-  <div class="sign-demo-parties">
-    <article class="sign-demo-party">
-      <h3>{strings.munaLabel}</h3>
-      <button type="button" id="sign-demo-muna-sign">{strings.signAsMunaButton}</button>
-      <p
-        class="sign-demo-status"
-        id="sign-demo-muna-status"
-        role="status"
-        aria-live="polite"
-        data-state="pending"
-      >
-        <span class="sign-demo-status-icon" aria-hidden="true">{strings.statusPendingIcon}</span>
-        <span class="sign-demo-status-text">{strings.statusPendingLabel}</span>
-      </p>
-      <p class="sign-demo-timestamp" id="sign-demo-muna-timestamp" hidden></p>
-    </article>
-
-    <article class="sign-demo-party">
-      <h3>{strings.madanLabel}</h3>
-      <button type="button" id="sign-demo-madan-sign" disabled>{strings.counterSignButton}</button>
-      <p
-        class="sign-demo-status"
-        id="sign-demo-madan-status"
-        role="status"
-        aria-live="polite"
-        data-state="pending"
-      >
-        <span class="sign-demo-status-icon" aria-hidden="true">{strings.statusPendingIcon}</span>
-        <span class="sign-demo-status-text">{strings.statusPendingLabel}</span>
-      </p>
-      <p class="sign-demo-timestamp" id="sign-demo-madan-timestamp" hidden></p>
-    </article>
-  </div>
-
-  <p class="sign-demo-timestamp-caption">{strings.timestampCaption}</p>
-
-  <button type="button" class="sign-demo-reset" id="sign-demo-reset">{strings.resetButton}</button>
-
-  <p class="sign-demo-closing-note">{strings.closingNote}</p>
+  <p class="sr-only" role="status" aria-live="polite" data-narration></p>
 </section>
 
 <script>
-  import { t, type Locale } from '../../i18n';
-  import {
-    counterSignAsMadan,
-    initState,
-    resetState,
-    signAsMuna,
-    verifyAll,
-    type DemoState,
-    type VerificationState,
-  } from './state';
-  import type { Alg } from './crypto';
+  import { initState, resetState, signAsMuna, counterSignAsMadan, verifyAll } from './state';
+  import type { DemoState } from './state';
 
-  const root = document.querySelector<HTMLElement>('.sign-demo');
+  const root = document.querySelector<HTMLElement>('[data-stage]');
   if (root) {
-    const locale = (document.documentElement.lang as Locale) || 'ne';
-    const strings = t[locale].signDemo;
+    const section = root.closest('.sign-demo') as HTMLElement;
+    const el = <T extends Element>(sel: string) => section.querySelector<T>(sel)!;
 
-    const textEl = root.querySelector<HTMLTextAreaElement>('#sign-demo-text')!;
-    const algValueEl = root.querySelector<HTMLElement>('#sign-demo-alg-value')!;
-    const munaSignBtn = root.querySelector<HTMLButtonElement>('#sign-demo-muna-sign')!;
-    const madanSignBtn = root.querySelector<HTMLButtonElement>('#sign-demo-madan-sign')!;
-    const resetBtn = root.querySelector<HTMLButtonElement>('#sign-demo-reset')!;
-    const munaStatus = root.querySelector<HTMLElement>('#sign-demo-muna-status')!;
-    const madanStatus = root.querySelector<HTMLElement>('#sign-demo-madan-status')!;
-    const munaTimestamp = root.querySelector<HTMLElement>('#sign-demo-muna-timestamp')!;
-    const madanTimestamp = root.querySelector<HTMLElement>('#sign-demo-madan-timestamp')!;
+    const docText = el<HTMLTextAreaElement>('[data-doc-text]');
+    const hashSigned = el<HTMLElement>('[data-hash-original]');
+    const hashNow = el<HTMLElement>('[data-hash-now]');
+    const narration = el<HTMLElement>('[data-narration]');
+    const replay = el<HTMLButtonElement>('[data-replay]');
+    const keyOut = {
+      muna: el<HTMLElement>('[data-key="muna"]'),
+      madan: el<HTMLElement>('[data-key="madan"]'),
+    };
+    const verdict = {
+      muna: el<HTMLElement>('[data-verdict="muna"]'),
+      madan: el<HTMLElement>('[data-verdict="madan"]'),
+    };
+    const seal = {
+      muna: el<HTMLElement>('[data-seal="muna"]'),
+      madan: el<HTMLElement>('[data-seal="madan"]'),
+    };
 
-    const defaultText = strings.contractDefaultText;
+    const ORIGINAL = root.dataset.original ?? '';
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, reduced.matches ? ms / 4 : ms));
 
-    // AC 2: force the ECDSA fallback path with ?alg=ecdsa — no monkeypatching
-    // crypto.subtle, just a different value fed into the same code path.
-    const forcedAlg: Alg | null =
-      new URLSearchParams(location.search).get('alg') === 'ecdsa' ? 'ECDSA' : null;
+    const shorten = (bytes: Uint8Array, n = 16) =>
+      Array.from(bytes.slice(0, n))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('')
+        .replace(/(.{4})/g, '$1 ')
+        .trim();
 
-    let state: DemoState | null = null;
-
-    function renderStatus(el: HTMLElement, v: VerificationState) {
-      const icon = el.querySelector<HTMLElement>('.sign-demo-status-icon')!;
-      const text = el.querySelector<HTMLElement>('.sign-demo-status-text')!;
-      el.dataset.state = v;
-      if (v === 'pending') {
-        icon.textContent = strings.statusPendingIcon;
-        text.textContent = strings.statusPendingLabel;
-      } else if (v === 'verified') {
-        icon.textContent = strings.statusVerifiedIcon;
-        text.textContent = strings.statusVerifiedLabel;
-      } else {
-        icon.textContent = strings.statusFailedIcon;
-        text.textContent = strings.statusFailedLabel;
-      }
+    async function fingerprint(text: string) {
+      const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return shorten(new Uint8Array(digest));
     }
 
-    function renderTimestamp(el: HTMLElement, date: Date | null) {
-      if (!date) {
-        el.hidden = true;
-        el.textContent = '';
-        return;
-      }
-      el.hidden = false;
-      const formatted = date.toLocaleString(locale === 'ne' ? 'ne-NP' : 'en-US');
-      el.textContent = `${strings.timestampLabel} ${formatted}`;
+    /* Fresh keys every run, so the printed fragment is never the same twice. */
+    async function keyPrefix(state: DemoState, who: 'muna' | 'madan') {
+      const raw = await crypto.subtle.exportKey('pkcs8', state[who].keys.privateKey);
+      return shorten(new Uint8Array(raw), 12);
     }
 
-    async function refresh() {
-      if (!state) return;
-      const v = await verifyAll(state);
-      renderStatus(munaStatus, v.muna);
-      renderStatus(madanStatus, v.madan);
-      renderTimestamp(munaTimestamp, state.munaSig?.signedAt ?? null);
-      renderTimestamp(madanTimestamp, state.madanSig?.signedAt ?? null);
-      munaSignBtn.disabled = !!state.munaSig;
-      madanSignBtn.disabled = !state.munaSig || !!state.madanSig;
+    let signedPrint = '';
+
+    async function refresh(state: DemoState) {
+      const current = docText.value;
+      const live: DemoState = { ...state, text: current };
+
+      const now = await fingerprint(current);
+      hashNow.textContent = now;
+      const matches = now === signedPrint;
+      hashNow.dataset.match = matches ? 'same' : 'different';
+      docText.dataset.altered = matches ? 'false' : 'true';
+
+      const v = await verifyAll(live);
+      verdict.muna.dataset.state = v.muna;
+      verdict.madan.dataset.state = v.madan;
+
+      narration.textContent = matches
+        ? 'Both signatures match the document.'
+        : 'The document has been changed, and both signatures have stopped matching it.';
     }
 
-    async function boot() {
-      state = await initState(defaultText, forcedAlg);
-      algValueEl.textContent =
-        state.alg === 'Ed25519' ? strings.algEd25519Label : strings.algEcdsaLabel;
-      textEl.value = defaultText;
-      await refresh();
-    }
+    async function play() {
+      replay.disabled = true;
+      docText.disabled = true;
 
-    munaSignBtn.addEventListener('click', async () => {
-      if (!state || state.munaSig) return;
+      let state = await resetState(await initState(ORIGINAL, null), ORIGINAL);
+      docText.value = '';
+      docText.dataset.altered = 'false';
+      hashSigned.textContent = '—';
+      hashNow.textContent = '—';
+      seal.muna.classList.remove('is-on');
+      seal.madan.classList.remove('is-on');
+      verdict.muna.dataset.state = 'idle';
+      verdict.madan.dataset.state = 'idle';
+
+      keyOut.muna.textContent = await keyPrefix(state, 'muna');
+      keyOut.madan.textContent = await keyPrefix(state, 'madan');
+      narration.textContent = 'Muna and Madan each hold a private key that only they have.';
+      await wait(1400);
+
+      docText.value = ORIGINAL;
+      signedPrint = await fingerprint(ORIGINAL);
+      hashSigned.textContent = signedPrint;
+      hashNow.textContent = signedPrint;
+      await wait(1200);
+
       state = await signAsMuna(state);
-      await refresh();
-    });
+      seal.muna.classList.add('is-on');
+      await refresh(state);
+      await wait(1000);
 
-    madanSignBtn.addEventListener('click', async () => {
-      if (!state || !state.munaSig || state.madanSig) return;
       state = await counterSignAsMadan(state);
-      await refresh();
-    });
+      seal.madan.classList.add('is-on');
+      await refresh(state);
 
-    resetBtn.addEventListener('click', async () => {
-      if (!state) return;
-      state = await resetState(state, defaultText);
-      textEl.value = defaultText;
-      await refresh();
-    });
+      docText.disabled = false;
+      replay.disabled = false;
+      return state;
+    }
 
-    textEl.addEventListener('input', async () => {
-      if (!state) return;
-      state = { ...state, text: textEl.value };
-      await refresh();
-    });
+    (async () => {
+      let state = await play();
 
-    void boot();
+      docText.addEventListener('input', () => {
+        void refresh(state);
+      });
+
+      replay.addEventListener('click', async () => {
+        state = await play();
+      });
+    })();
   }
 </script>

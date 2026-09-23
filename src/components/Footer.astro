@@ -1,13 +1,120 @@
 ---
-import { t, type Locale } from '../i18n';
+import { t } from '../i18n';
 
-interface Props {
-  locale: Locale;
-}
-const { locale } = Astro.props;
+
+/*
+  Deliberately thin on links. There is no contact destination yet and the
+  domain that once stood in for one is not registered, so a footer full of
+  plausible-looking links would be inventing surfaces that do not exist.
+  What is here is true: who this is for, and the year.
+*/
+const tagline = 'One digital signature, for every Nepali.';
+
 ---
 
 <footer class="site-footer">
-  <span class="wordmark" aria-hidden="true"><span class="mark"></span>Pahichan</span>
-  <span class="copyright">{t[locale].copyright}</span>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="wordmark" aria-hidden="true"><span class="mark"></span>Pahichan</span>
+        <p class="footer-tagline">{tagline}</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copyright">{t.copyright}</span>
+      <span class="footer-maker">
+        A product of <span class="footer-maker-name">Ninja Infosys LLC</span>
+      </span>
+    </div>
+  </div>
 </footer>
+
+<style>
+  .site-footer {
+    background: var(--footer-bg);
+    color: var(--footer-ink);
+    margin-top: 0;
+  }
+
+  .footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 72px var(--gutter) 40px;
+  }
+
+  .footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .footer-brand .wordmark {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--footer-ink);
+  }
+
+  /* The mark keeps its red here too — it is the only colour in the band. */
+  .footer-brand .mark {
+    background-color: var(--brand);
+  }
+
+  .footer-tagline {
+    margin: 12px 0 0;
+    max-width: 34ch;
+    color: var(--footer-muted);
+    font-size: 1rem;
+  }
+
+
+
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--footer-line);
+    font-size: 14px;
+    color: var(--footer-muted);
+  }
+
+  /*
+    Sits hard right against the copyright. The attribution is quiet — "A
+    product of" stays muted and only the company name lifts — so it reads as
+    a maker's mark rather than a second brand competing with ePahichan's own.
+  */
+  .footer-maker {
+    margin-left: auto;
+  }
+
+  .footer-maker-name {
+    color: var(--footer-ink);
+    font-weight: 500;
+  }
+
+  .site-footer :global(:focus-visible) {
+    outline-color: #ffffff;
+  }
+
+  @media (max-width: 600px) {
+    .footer-inner {
+      padding-top: 56px;
+    }
+
+    .footer-bottom {
+      margin-top: 40px;
+    }
+
+    /* Stacked on a phone, so the auto margin would push it off alignment. */
+    .footer-maker {
+      margin-left: 0;
+    }
+  }
+</style>

@@ -1,24 +1,21 @@
 ---
-import '@fontsource/mukta/400.css';
-import '@fontsource/mukta/600.css';
-import '@fontsource/noto-serif-devanagari/600.css';
-import '@fontsource/noto-serif-devanagari/700.css';
+import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import type { Locale } from '../i18n';
+import { t } from '../i18n';
 
-interface Props {
-  locale: Locale;
-  relPath: string;
-  title: string;
-}
-const { locale, relPath, title } = Astro.props;
+
+const strings = t;
+const site = Astro.site ?? new URL('https://epahichan.com');
+const canonical = new URL('/', site).href;
+const ogImage = new URL('/brand/epahichan-mark-512.png', site).href;
+
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -29,14 +26,93 @@ const { locale, relPath, title } = Astro.props;
       disallow-all public/robots.txt together, at launch, not before.
     -->
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#14171c" />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="icon" type="image/png" sizes="32x32" href="/brand/epahichan-mark-32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/brand/epahichan-mark-192.png" />
-    <title>{title}</title>
+
+    {
+      /* The two cuts the hero itself draws with; 600 arrives below the fold. */
+      ['/fonts/poppins-latin-400.woff2', '/fonts/poppins-latin-700.woff2'].map((href) => (
+        <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+      ))
+    }
+
+    <title>{strings.metaTitle}</title>
+    <meta name="description" content={strings.metaDescription} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ePahichan" />
+    <meta property="og:title" content={strings.metaTitle} />
+    <meta property="og:description" content={strings.metaDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={ogImage} />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={strings.metaTitle} />
+    <meta name="twitter:description" content={strings.metaDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'ePahichan',
+        url: canonical,
+        inLanguage: 'en',
+        description: strings.metaDescription,
+      })}
+    />
   </head>
   <body>
-    <Header locale={locale} relPath={relPath} />
+    <Header />
     <slot />
-    <Footer locale={locale} />
+    <Footer />
+
+    <script is:inline>
+      /*
+        Set before first paint so sections start hidden only when this script
+        actually ran — without it the CSS leaves everything visible, which is
+        the correct no-JavaScript result.
+      */
+      (function () {
+        var root = document.documentElement;
+        root.setAttribute('data-reveal', '');
+
+        function show(el) {
+          el.classList.add('is-visible');
+        }
+
+        function start() {
+          var sections = document.querySelectorAll('main > section:not(.hero)');
+          if (!('IntersectionObserver' in window)) {
+            sections.forEach(show);
+            return;
+          }
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  show(entry.target);
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { rootMargin: '0px 0px -12% 0px', threshold: 0.08 }
+          );
+          sections.forEach(function (el) {
+            io.observe(el);
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', start);
+        } else {
+          start();
+        }
+      })();
+    </script>
   </body>
 </html>

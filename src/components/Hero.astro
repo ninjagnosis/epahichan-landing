@@ -1,0 +1,237 @@
+---
+import { Image } from 'astro:assets';
+import { photos } from '../data/photos';
+
+const photo = photos.hero;
+---
+
+<section class="hero">
+  <div class="hero-media">
+    <Image src={photo.src} alt="" width={1600} height={1067} loading="eager" />
+    <div class="hero-tint"></div>
+    <div class="hero-scrim"></div>
+  </div>
+
+  <div class="hero-content">
+    <h1>
+      "Now, let's sign our documents online."
+    </h1>
+    <p class="standfirst">
+      'Recognised by the law and free of hassle.'
+    </p>
+    <p class="mission">
+      'One digital signature, for every Nepali.'
+    </p>
+
+    <a class="hero-action" href="#sign-demo-heading">
+      'See it in action'
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    /*
+      dvh where it exists: on a phone 100vh is the tallest the viewport ever
+      gets, so the browser chrome crops the bottom of the hero until the user
+      scrolls. dvh tracks the visible height instead.
+    */
+    min-height: 100dvh;
+    /* Clears the header, which is overlaid rather than stacked above. */
+    padding-top: 88px;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /*
+      Guarantees the overlaid text's contrast floor whatever the photograph's
+      own subject is — this one is ink on white paper, which unmodified would
+      leave white type on a near-white field.
+    */
+    filter: grayscale(1) brightness(0.4) contrast(1.1);
+    will-change: transform, filter;
+    animation: hero-settle 2200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .hero-tint {
+    position: absolute;
+    inset: 0;
+    background: var(--brand-ink);
+    mix-blend-mode: multiply;
+    /*
+      Only a trace. A heavier wash turns the whole photograph brand-red, and
+      then the red that matters — the mark and the action — has nothing to
+      stand out against.
+    */
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  /*
+    A flat scrim, not a gradient one — gradients are on PRODUCT-DESIGN.md §5's
+    banned list, so the contrast floor is bought with a single even layer
+    instead. Worst case here is the photograph's white paper, which lands at
+    about 12:1 against white type: AAA for body text, not just display.
+  */
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 16, 21, 0.4);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    color: #ffffff;
+  }
+
+  /*
+    Sized up deliberately: the audience is the general public, many of whom
+    read slowly, so the headline carries more of the page's weight than it
+    would on a site whose readers skim.
+  */
+  h1 {
+    max-width: 18ch;
+    font-size: clamp(2.25rem, 5.6vw, 4rem);
+    line-height: 1.12;
+    color: #ffffff;
+    opacity: 0;
+    animation: hero-rise 1100ms cubic-bezier(0.16, 1, 0.3, 1) 220ms both;
+  }
+
+  .standfirst {
+    max-width: 46ch;
+    margin: 24px 0 0;
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.86);
+    opacity: 0;
+    animation: hero-rise 1100ms cubic-bezier(0.16, 1, 0.3, 1) 360ms both;
+  }
+
+  /*
+    The mission line sits below the heading, not above it: an eyebrow label
+    stacked over an h1 is on PRODUCT-DESIGN.md §5's list of things this site
+    does not do.
+  */
+  .mission {
+    max-width: 46ch;
+    margin: 0;
+    font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+    color: rgba(255, 255, 255, 0.8);
+    opacity: 0;
+    animation: hero-rise 1100ms cubic-bezier(0.16, 1, 0.3, 1) 470ms both;
+  }
+
+  .hero-action {
+    display: inline-block;
+    margin-top: 36px;
+    padding: 14px 24px;
+    background: var(--brand-ink);
+    color: #ffffff;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-control);
+    opacity: 0;
+    animation: hero-action-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) 640ms both;
+    transition: background-color 200ms ease-out, transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hero-action:hover {
+    background: var(--brand);
+    transform: translateY(-2px);
+  }
+
+  .hero-action:active {
+    transform: translateY(0);
+  }
+
+  /*
+    Devanagari sits on a lower x-height than the Latin at the same point size,
+    so it is set larger here rather than relying on one shared scale, and given
+    a little tracking, which Devanagari wants at display sizes.
+  */
+
+
+
+
+  /*
+    The photograph keeps moving fractionally after the text has settled, which
+    is what stops the hero feeling like it snapped into place — a slow drift
+    reads as a camera coming to rest rather than an animation finishing.
+  */
+  @keyframes hero-settle {
+    from {
+      transform: scale(1.08);
+      filter: grayscale(1) brightness(0.28) contrast(1.1) blur(6px);
+    }
+    60% {
+      filter: grayscale(1) brightness(0.4) contrast(1.1) blur(0);
+    }
+    to {
+      transform: scale(1);
+      filter: grayscale(1) brightness(0.4) contrast(1.1) blur(0);
+    }
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+  }
+
+  @keyframes hero-action-rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 12px, 0) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /*
+    Reduced motion means no motion, not faster motion — so the end state is
+    set directly and every animation is dropped rather than shortened.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-media :global(img) {
+      transform: none;
+      animation: none;
+    }
+
+    h1,
+    .standfirst,
+    .mission,
+    .hero-action {
+      opacity: 1;
+      animation: none;
+    }
+  }
+</style>

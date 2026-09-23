@@ -1,0 +1,52 @@
+/*
+  Poppins, self-hosted from public/fonts rather than imported from
+  @fontsource. Two reasons, both about the swap visitors were seeing:
+
+  1. A stable URL can be preloaded. An @fontsource import is bundled and
+     hashed, so there is nothing to point a <link rel="preload"> at.
+  2. The unicode-range keeps the declaration honest about what this file
+     covers, so adding a second script later is a matter of adding faces
+     rather than rewriting these.
+
+  Files are the unmodified @fontsource/poppins 5.3.0 woff2 subsets (Poppins is
+  licensed under the SIL Open Font License). Weights are limited to the three
+  the site uses: 400 body, 600 controls and subheads, 700 headings.
+
+  font-display: swap is kept deliberately. With the file preloaded it should
+  win the race in almost every case; if it does not, swap shows the text in a
+  fallback rather than hiding it, which matters more on a slow connection
+  than avoiding a reflow.
+*/
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/poppins-latin-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/poppins-latin-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/poppins-latin-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}

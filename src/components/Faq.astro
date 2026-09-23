@@ -1,0 +1,206 @@
+---
+
+
+/*
+  Every answer here restates something the page already establishes, or
+  something docs/landing-content-v1.md §5 records from the Act itself. The
+  hardest question is the last one, and it is included precisely because the
+  honest answer is "no" — §5.6 is explicit that the page must never imply
+  anything at all can be signed digitally.
+*/
+const faqs = [
+  {
+    q: 'What is a digital signature?',
+    a: 'A digital signature is a cryptographic value computed over a document using a private key held solely by the signatory. Any party holding the corresponding public key can independently verify that the signature corresponds to that document and to no other.',
+  },
+  {
+    q: 'Is a digital signature legally recognised in Nepal?',
+    a: 'Yes, subject to one condition. Section 5 of the Electronic Transactions Act, 2063 provides that a digital signature has legal validity wherever prevailing law requires a document to be signed, provided it is made in accordance with the procedures prescribed by the Act and the Rules made under it. ePahichan exists to bring digital signatures within reach of ordinary people.',
+  },
+  {
+    q: 'Can a digital signature be forged?',
+    a: 'A valid signature cannot be produced without the corresponding private key, which remains in the signatory\'s possession at all times. Subsequent alteration of a signed document is equally detectable: modifying a single character causes verification to fail, and the discrepancy cannot be concealed.',
+  },
+  {
+    q: 'Is your involvement required to verify a signature?',
+    a: 'No. Verification requires only the document and the signatory\'s public key. It depends on no server operated by ePahichan, and therefore remains possible independently of us.',
+  },
+  {
+    q: 'Does a signature establish when a document was signed?',
+    a: 'Not on its own. A digital signature establishes who signed a document and what was signed, but not when. Evidence of time must be obtained separately from a trusted timestamp authority and carried alongside the signature.',
+  },
+  {
+    q: 'Are the signatures in the demonstration above real?',
+    a: 'They are genuine cryptographic signatures, generated and verified in your browser. They are not ePahichan signatures: the keys are created afresh on each visit and are bound to no one, so they establish that somebody signed, not that a particular person did. Binding a key to an identified person is the function of a certificate.',
+  },
+  {
+    q: 'May any document be signed digitally?',
+    a: 'No. Section 77 of the Act excludes certain instruments from its scope, including deeds and documents of title relating to land and immovable property, wills, mortgages, negotiable instruments, powers of attorney, and pleadings filed before a court or in arbitration.',
+  },
+];
+
+const heading = 'Common questions';
+---
+
+<section class="faq" aria-labelledby="faq-heading">
+  <h2 id="faq-heading">{heading}</h2>
+
+  <div class="faq-list">
+    {
+      faqs.map((item) => (
+        <details class="faq-item">
+          <summary>
+            <span class="faq-q">{item.q}</span>
+            <span class="faq-sign" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-a">
+            <p>{item.a}</p>
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  })}
+/>
+
+<style>
+  /*
+    Full page width, not the prose measure. An accordion row is a question and
+    a control at opposite ends, so a narrow column squeezes it for no gain —
+    the reading measure is restored on the answer instead, which is the only
+    part that is actually prose.
+  */
+  .faq {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+    padding-top: 160px;
+    padding-bottom: 160px;
+  }
+
+  h2 {
+    margin-bottom: 48px;
+  }
+
+  /*
+    Native <details>, so every question is readable, expandable and keyboard
+    operable with no JavaScript — and still expanded by find-in-page.
+  */
+  .faq-item {
+    border-top: 1px solid var(--line);
+  }
+
+  .faq-item:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 28px 0;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:hover .faq-q {
+    color: var(--brand-ink);
+  }
+
+  .faq-q {
+    transition: color 150ms ease-out;
+  }
+
+  /*
+    A plus that becomes a minus — drawn from two rules rather than an icon
+    font or an inline SVG per item.
+  */
+  .faq-sign {
+    position: relative;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+  }
+
+  .faq-sign::before,
+  .faq-sign::after {
+    content: '';
+    position: absolute;
+    background: var(--brand-ink);
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms ease-out;
+  }
+
+  .faq-sign::before {
+    top: 6px;
+    left: 0;
+    width: 14px;
+    height: 2px;
+  }
+
+  .faq-sign::after {
+    top: 0;
+    left: 6px;
+    width: 2px;
+    height: 14px;
+  }
+
+  .faq-item[open] .faq-sign::after {
+    transform: rotate(90deg);
+    opacity: 0;
+  }
+
+  .faq-a {
+    padding-bottom: 28px;
+    color: var(--ink-muted);
+  }
+
+  .faq-a p {
+    margin: 0;
+    max-width: 68ch;
+  }
+
+  .faq-item[open] .faq-a {
+    animation: faq-open 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes faq-open {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item[open] .faq-a {
+      animation: none;
+    }
+
+    .faq-sign::before,
+    .faq-sign::after {
+      transition: none;
+    }
+  }
+</style>

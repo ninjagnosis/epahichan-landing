@@ -1,4 +1,9 @@
 :root {
+  /* Light only, deliberately. Without this the browser still paints form
+     controls, scrollbars and the text caret dark for a visitor whose OS is
+     dark, against a page that is always light. */
+  color-scheme: light;
+
   --paper: #ffffff;
   --surface: #f6f7f9;
   --ink: #14171c;
@@ -8,11 +13,19 @@
   --brand: #e31b23;
   --brand-ink: #b30712;
 
-  --night: #0d1015;
-  --night-ink: #eef0f3;
-  --night-muted: #aeb4bd;
-  --night-line: #262b33;
-  --brand-lift: #ff3a3e;
+  /*
+    Valid / invalid. The palette had no green because nothing needed one until
+    the demo had a passing state to show. Both are dark enough to carry white
+    icons at AA, and neither is the brand red doing double duty.
+  */
+  --ok: #0f7b3d;
+  --bad: #c0271c;
+
+  /* The footer is the one dark surface on an otherwise light-only page. */
+  --footer-bg: #0d1015;
+  --footer-ink: #f2f4f7;
+  --footer-muted: #a8afb9;
+  --footer-line: rgba(255, 255, 255, 0.14);
 
   --radius-control: 8px;
   --radius-panel: 12px;

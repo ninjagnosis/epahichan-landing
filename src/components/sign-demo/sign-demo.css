@@ -1,243 +1,409 @@
 .sign-demo {
   max-width: var(--max-width);
-  margin: 64px auto 0;
-  padding: 0 var(--gutter);
+  margin: 0 auto;
+  padding: 160px var(--gutter) 0;
 }
 
-.sign-demo-intro {
-  color: var(--ink-muted);
-  margin-top: 8px;
-  max-width: 640px;
-}
-
-.sign-demo-alg {
-  margin-top: 24px;
-  font-size: 14px;
-  color: var(--ink-muted);
-}
-
-.sign-demo-alg-label {
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.sign-demo-panel {
-  margin-top: 24px;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-panel);
-  background: var(--surface);
-}
-
-.sign-demo-panel label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.sign-demo-panel textarea {
-  width: 100%;
-  font: inherit;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-control);
-  background: var(--paper);
-  color: var(--ink);
-  resize: vertical;
-}
-
-.sign-demo-steps {
-  list-style: none;
-  margin: 24px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 12px;
-}
-
-.sign-demo-steps li {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-}
-
-.sign-demo-steps p {
-  margin: 0;
-}
-
-.sign-demo-step-numeral {
-  flex: none;
-  width: 1.6em;
-  font-weight: 700;
-  color: var(--brand-ink);
-}
-
-.sign-demo-parties {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-@media (min-width: 640px) {
-  .sign-demo-parties {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.sign-demo-party {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-panel);
-  padding: 20px;
-}
-
-.sign-demo-party h3 {
-  margin-bottom: 12px;
-}
-
-.sign-demo-party button,
-.sign-demo-reset {
-  font: inherit;
-  font-weight: 600;
-  padding: 10px 16px;
-  border-radius: var(--radius-control);
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.sign-demo-party button:not(:disabled):hover,
-.sign-demo-reset:hover {
-  border-color: var(--brand-ink);
-  color: var(--brand-ink);
-  transition: border-color 150ms ease-out, color 150ms ease-out;
-}
-
-.sign-demo-party button:disabled {
-  color: var(--ink-muted);
-  cursor: not-allowed;
-}
-
-.sign-demo-status {
-  margin-top: 16px;
+.sign-demo-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.replay {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  background: none;
   border: 1px solid var(--line);
   border-radius: var(--radius-control);
-  font-weight: 600;
-  width: fit-content;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease-out,
+    color 180ms ease-out,
+    opacity 180ms ease-out;
 }
 
-.sign-demo-status-icon {
-  font-size: 18px;
-  line-height: 1;
-}
-
-.sign-demo-status[data-state='pending'] {
-  color: var(--ink-muted);
-}
-
-.sign-demo-status[data-state='verified'] {
-  color: var(--ink);
-}
-
-.sign-demo-status[data-state='failed'] {
-  color: var(--brand-ink);
+.replay:hover:not(:disabled) {
   border-color: var(--brand-ink);
-  border-style: dashed;
+  color: var(--brand-ink);
 }
 
-.sign-demo-timestamp {
-  margin-top: 12px;
-  font-size: 14px;
+/* Disabled while the sequence is mid-flight, so it cannot be restarted into itself. */
+.replay:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.replay svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- the stage ------------------------------------------------------- */
+
+.stage {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr;
+  align-items: start;
+  gap: 32px;
+  margin-top: 56px;
+}
+
+@media (max-width: 800px) {
+  .stage {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* The document is the subject, so on a narrow screen it leads. */
+  .doc {
+    order: -1;
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .sign-demo {
+    padding-top: 96px;
+  }
+
+  .sign-demo-head {
+    gap: 16px;
+  }
+
+  .stage {
+    margin-top: 32px;
+    gap: 20px;
+  }
+
+  /*
+    Muna and Madan sit side by side rather than stacking, so the two verdicts
+    stay comparable at a glance — that comparison is the whole point.
+  */
+  .party {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'avatar name'
+      'avatar verdict'
+      'key key'
+      'keyval keyval';
+    align-items: center;
+    gap: 0 12px;
+    text-align: left;
+  }
+
+  .avatar {
+    grid-area: avatar;
+  }
+
+  .avatar svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .party-name {
+    grid-area: name;
+    margin: 0;
+  }
+
+  .verdict {
+    grid-area: verdict;
+    margin: 4px 0 0;
+    width: 26px;
+    height: 26px;
+  }
+
+  .party .key-label {
+    grid-area: key;
+    justify-content: flex-start;
+    margin-top: 12px;
+  }
+
+  /*
+    Only the party's own key takes a grid slot; the document's fingerprints
+    live outside this layout and were being given one by mistake.
+  */
+  .party .key-value {
+    grid-area: keyval;
+  }
+
+  /*
+    These are hex fragments, not prose — they only have to be recognisable as
+    a long value that changes, so they shrink further than body text would.
+  */
+  .key-value {
+    font-size: 11px;
+    letter-spacing: -0.01em;
+    line-height: 1.45;
+  }
+
+  .key-label {
+    font-size: 12px;
+  }
+
+  .doc-paper {
+    padding: 20px 16px 16px;
+  }
+
+  .doc-text {
+    font-size: 1rem;
+  }
+
+  /* Two fingerprints side by side is unreadable on a phone. */
+  .prints {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .doc-seals {
+    flex-wrap: wrap;
+  }
+}
+
+/* --- the two people -------------------------------------------------- */
+
+.party {
+  text-align: center;
+}
+
+.avatar svg {
+  width: 56px;
+  height: 56px;
+  color: var(--ink);
+  stroke-width: 1.5;
+}
+
+.party-name {
+  margin: 8px 0 0;
+  font-weight: 600;
+}
+
+.key-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 16px 0 4px;
+  font-size: 13px;
   color: var(--ink-muted);
 }
 
-.sign-demo-timestamp-caption {
-  margin-top: 24px;
-  font-size: 14px;
+.key-label svg {
+  width: 14px;
+  height: 14px;
+}
+
+.doc .key-label {
+  justify-content: flex-start;
+}
+
+/*
+  Monospace, and deliberately only a fragment of the real key. It is here to
+  be recognised as "a long secret number", not to be read.
+*/
+.key-value {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+/* --- pass / fail ------------------------------------------------------ */
+
+.verdict {
+  position: relative;
+  margin: 16px auto 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line);
+  transition:
+    background-color 260ms ease-out,
+    border-color 260ms ease-out,
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/*
+  The state is carried by the icon's shape as well as by colour — a tick and
+  a cross stay distinguishable to a reader who cannot tell the two apart.
+  Both icons are always present and one is revealed, so nothing is injected
+  into the DOM mid-sequence.
+*/
+.verdict-icon {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  stroke-width: 3;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
+.verdict[data-state='idle'] {
+  background: none;
+}
+
+.verdict[data-state='verified'] {
+  border-color: var(--ok);
+  background: var(--ok);
+  transform: scale(1.08);
+}
+
+.verdict[data-state='verified'] .verdict-ok {
+  opacity: 1;
+  color: #ffffff;
+}
+
+.verdict[data-state='failed'] {
+  border-color: var(--bad);
+  background: var(--bad);
+  transform: scale(1.08);
+}
+
+.verdict[data-state='failed'] .verdict-bad {
+  opacity: 1;
+  color: #ffffff;
+}
+
+/* --- the document ----------------------------------------------------- */
+
+.doc-paper {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  padding: 28px 24px 20px;
+  min-height: 150px;
+}
+
+/*
+  A real textarea rather than a contenteditable div: it is announced as an
+  editable field, it takes a label, and mobile keyboards treat it correctly.
+*/
+.doc-text {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  resize: none;
+  font: inherit;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  transition: color 200ms ease-out;
+}
+
+.doc-text:focus {
+  outline: none;
+}
+
+.doc-paper:focus-within {
+  border-color: var(--ink);
+}
+
+.doc-text[data-altered='true'] {
+  color: var(--bad);
+}
+
+.doc-text:disabled {
+  opacity: 1;
+  -webkit-text-fill-color: var(--ink);
+}
+
+/* --- the two fingerprints --------------------------------------------- */
+
+.prints {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  margin-top: 20px;
+}
+
+.print .key-label {
+  margin-top: 0;
+}
+
+[data-hash-now][data-match='different'] {
+  color: var(--bad);
+}
+
+.doc-seals {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-control);
   color: var(--ink-muted);
-  max-width: 640px;
+  opacity: 0.35;
+  transform: scale(0.96);
+  transition:
+    opacity 300ms ease-out,
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 300ms ease-out,
+    color 300ms ease-out;
 }
 
-.sign-demo-reset {
-  margin-top: 24px;
+.seal svg {
+  width: 14px;
+  height: 14px;
 }
 
-.sign-demo-closing-note {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line);
-  color: var(--ink-muted);
-  max-width: 640px;
+.seal.is-on {
+  opacity: 1;
+  transform: none;
+  border-style: solid;
+  border-color: var(--ok);
+  color: var(--ok);
 }
 
-@media (prefers-color-scheme: dark) {
-  .sign-demo-panel {
-    background: var(--night);
-    border-color: var(--night-line);
+.doc .key-label,
+.doc .key-value {
+  text-align: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .verdict,
+  .seal,
+  .doc-text {
+    transition: none;
   }
 
-  .sign-demo-panel textarea {
-    background: var(--night);
-    border-color: var(--night-line);
-    color: var(--night-ink);
-  }
-
-  .sign-demo-intro,
-  .sign-demo-alg,
-  .sign-demo-timestamp,
-  .sign-demo-timestamp-caption,
-  .sign-demo-closing-note {
-    color: var(--night-muted);
-  }
-
-  .sign-demo-alg-label {
-    color: var(--night-ink);
-  }
-
-  .sign-demo-step-numeral {
-    color: var(--brand-lift);
-  }
-
-  .sign-demo-closing-note {
-    border-color: var(--night-line);
-  }
-
-  .sign-demo-party,
-  .sign-demo-status {
-    border-color: var(--night-line);
-  }
-
-  .sign-demo-party button,
-  .sign-demo-reset {
-    border-color: var(--night-line);
-    background: var(--night);
-    color: var(--night-ink);
-  }
-
-  .sign-demo-party button:not(:disabled):hover,
-  .sign-demo-reset:hover {
-    border-color: var(--brand-lift);
-    color: var(--brand-lift);
-  }
-
-  .sign-demo-party button:disabled {
-    color: var(--night-muted);
-  }
-
-  .sign-demo-status[data-state='pending'] {
-    color: var(--night-muted);
-  }
-
-  .sign-demo-status[data-state='verified'] {
-    color: var(--night-ink);
-  }
-
-  .sign-demo-status[data-state='failed'] {
-    color: var(--brand-lift);
-    border-color: var(--brand-lift);
+  .verdict[data-state='verified'],
+  .verdict[data-state='failed'] {
+    transform: none;
   }
 }

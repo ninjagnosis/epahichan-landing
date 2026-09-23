@@ -1,14 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
 import SignDemo from '../components/sign-demo/SignDemo.astro';
-import { t } from '../i18n';
-
-const locale = 'ne' as const;
+import Faq from '../components/Faq.astro';
 ---
-<BaseLayout locale={locale} relPath="/" title="ePahichan">
+<BaseLayout>
   <main>
-    <h1>ePahichan</h1>
-    <p>{t[locale].comingSoon}</p>
+    <Hero />
+    <SignDemo />
+    <Faq />
   </main>
-  <SignDemo locale={locale} />
 </BaseLayout>

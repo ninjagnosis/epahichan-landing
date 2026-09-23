@@ -1,26 +1,24 @@
+import type { ImageMetadata } from 'astro';
+import fingerprint from '../assets/photos/fingerprint.jpg';
+
 export type Photo = {
-  /** Path under src/assets/photos, pre-cropped to the ratio it is displayed at. */
-  src: string;
+  src: ImageMetadata;
   credit: string;
   source: string;
-  alt: { ne: string; en: string };
+  alt: string;
 };
 
-/**
- * Photo selection is Round 3 content (owner decision, not yet made). This
- * placeholder entry exists only so the shape is reviewable; it is not
- * imported or rendered by any page yet.
- *
- * Leave the fields empty until then. Under ENGINEERING-STANDARDS §7.1 a named
- * third party on a public surface needs a four-part written consent record on
- * the ticket first, and a `credit`/`source` naming a photographer, a stock
- * library, or anyone identifiable in a frame is exactly that shape.
- */
-export const photos: Record<string, Photo> = {
-  placeholder: {
-    src: '',
-    credit: '',
-    source: '',
-    alt: { ne: '', en: '' },
+// Pexels license: free for commercial use, no attribution required; credited
+// here out of courtesy. Chosen for theme (identity) rather than place — see
+// docs/landing-content-v1.md §4 for the original shop-photo pair this
+// replaces. The hero uses it decoratively, so the alt text is not rendered
+// today; it is kept so the photo can be used non-decoratively without
+// someone having to invent it later.
+export const photos = {
+  hero: {
+    src: fingerprint,
+    credit: 'cottonbro studio (Pexels)',
+    source: 'https://www.pexels.com/photo/close-up-photo-of-fingerpints-on-paper-8382611/',
+    alt: 'A close-up photo of a fingerprint taken on paper',
   },
-};
+} as const;
