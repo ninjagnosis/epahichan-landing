@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // NOTE: this must match the Worker this project already deploys to. The
+  // build settings name the token "epahichan-landing build token", so that is
+  // the name used here — change this one field if the Worker is named
+  // something else, or `wrangler deploy` will create a second Worker beside
+  // the real one rather than updating it.
+  "name": "epahichan-landing",
+  "compatibility_date": "2026-09-24",
+
+  // A static Astro site (`output: 'static'` in astro.config.mjs) with no
+  // Cloudflare adapter, so there is no Worker script to run and no
+  // `dist/_worker.js/index.js` for `wrangler deploy` to find — which is
+  // exactly what the deploy failed on. Assets-only: wrangler uploads ./dist
+  // and serves it directly. Adding an adapter to synthesise a Worker would
+  // be solving the error message rather than the situation.
+  "assets": {
+    "directory": "./dist"
+  }
+}

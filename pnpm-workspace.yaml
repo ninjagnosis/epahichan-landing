@@ -1,27 +1,3 @@
-# This repository is a single package. The file exists anyway, because it is
-# the only place pnpm 10 will read the list of dependencies whose install
-# scripts may run — pnpm blocks lifecycle scripts by default, and Astro's
-# image pipeline needs sharp's.
-#
-# **`packages` is mandatory whenever this file exists.** Without it pnpm 10
-# fails the install outright with "packages field missing or empty" and the
-# deploy never reaches the build command. It worked locally and failed in CI
-# because the two ran different pnpm versions.
-packages:
-  - '.'
-
-# **Both spellings on purpose, and neither is redundant.** pnpm 10.11.1 (what
-# Cloudflare Workers Builds runs) reads `onlyBuiltDependencies` and has never
-# heard of `allowBuilds`; pnpm 12 (what this is developed against) reads
-# `allowBuilds` and ignores `onlyBuiltDependencies`. Carrying only one means
-# sharp's build silently does not run on the other, which does not fail the
-# install — it produces a deploy whose images are quietly broken.
-#
-# Delete the older key once CI and local development are on the same major.
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
-
 allowBuilds:
-  esbuild: true
-  sharp: true
+  esbuild: set this to true or false
+  sharp: set this to true or false
