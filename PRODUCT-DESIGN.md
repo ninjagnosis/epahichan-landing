@@ -58,11 +58,14 @@ Adopted 2026-09-22 from a design-research pass (sources at the end).
 
 ## 3. Typography
 
-- **Devanagari: Mukta** (400/600), matching this site.
-- **Latin UI and data: Noto Sans**, with tabular figures in tables and figures
-  that align.
-- **Identifiers** (serials, digests, reference numbers): a monospace (Noto Sans
-  Mono), selectable and copyable.
+- **Latin and Devanagari: Poppins** (400/500/600/700), one family for both
+  scripts, as the developer platform already uses it. Mukta stays only as the
+  fallback for a Devanagari glyph Poppins lacks. Tabular figures in tables and
+  figures that align.
+- **Identifiers** (serials, digests, reference numbers, codes): JetBrains Mono,
+  selectable and copyable.
+- Adopted 2026-09-26, replacing Noto Sans and Noto Sans Mono, so the app, the
+  staff console and the developer platform share one type.
 - Not Inter, not Geist (overused; Geist has no Devanagari at all). The serif
   Nepali headings are this marketing site's, not the products'.
 - Real hierarchy — headings and body must not look alike. Body at least 16px on
@@ -117,7 +120,8 @@ a small interface of our own so it can be replaced.
 | **Data grids** | **`trina_grid`** (MIT) | Sorting, filtering, resizing, pinning, keyboard editing, export, server pagination. Behind our own `DataGrid` interface |
 | Very large read-only tables | `two_dimensional_scrollables` (flutter.dev) | Where a grid is only scrolled, not edited |
 | Bikram Sambat | `nepali_date_picker` + `nepali_utils` | Display and entry only — see §7 |
-| Fonts | `google_fonts` (or bundled assets) | Mukta, Noto Sans, Noto Sans Mono |
+| Fonts | `google_fonts` (or bundled assets) | Poppins, JetBrains Mono; Mukta as the Devanagari fallback |
+| PIN and one-time code entry | `pinput` (tornike.dev, MIT, no dependencies) | Boxes on the phone's own number keyboard; masked for a PIN, SMS autofill for a code. Adopted at 6.0.2 |
 | Localisation | `flutter_localizations` + gen-l10n | English and Nepali from day one; no string in a widget |
 
 **Rejected as base layers**, and why: `shadcn_ui`, `forui` (their own design
@@ -195,6 +199,7 @@ hard to obtain.
 - impeccable.style — design slop catalogue: https://impeccable.style/slop/
 - material_3_expressive: https://pub.dev/packages/material_3_expressive ·
   canonical repository https://github.com/paadevelopments/material_3_expressive
+- pinput: https://pub.dev/packages/pinput
 - trina_grid: https://pub.dev/packages/trina_grid
 - two_dimensional_scrollables: https://pub.dev/packages/two_dimensional_scrollables
 - nepali_date_picker / nepali_utils: https://pub.dev/packages/nepali_date_picker ·
