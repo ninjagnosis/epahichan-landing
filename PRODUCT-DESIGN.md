@@ -58,16 +58,22 @@ Adopted 2026-09-22 from a design-research pass (sources at the end).
 
 ## 3. Typography
 
-- **Latin and Devanagari: Poppins** (400/500/600/700), one family for both
-  scripts, as the developer platform already uses it. Mukta stays only as the
-  fallback for a Devanagari glyph Poppins lacks. Tabular figures in tables and
-  figures that align.
+- **Product interfaces (dashboards, consoles, the app's screens): Inter**
+  (400/500/600, variable), drawn for small sizes on screens, with tabular
+  figures for tables and anything that aligns. Devanagari comes from **Noto
+  Sans Devanagari**, designed to sit beside it; Inter has none of its own, so
+  every product stack names it next. This is what product UIs of this kind use
+  (Linear, ElevenLabs and others): Poppins is wide and geometric and loses
+  legibility and density at 13 to 15px in tables and forms.
+- **Brand and marketing surfaces** (this site, the portal's public pages and
+  docs headings): **Poppins**, which covers both scripts and looks its best
+  large. Mukta stays only as the fallback for a Devanagari glyph Poppins lacks.
 - **Identifiers** (serials, digests, reference numbers, codes): JetBrains Mono,
   selectable and copyable.
-- Adopted 2026-09-26, replacing Noto Sans and Noto Sans Mono, so the app, the
-  staff console and the developer platform share one type.
-- Not Inter, not Geist (overused; Geist has no Devanagari at all). The serif
-  Nepali headings are this marketing site's, not the products'.
+- History: Poppins everywhere was adopted 2026-09-26, replacing Noto Sans;
+  product interfaces moved to Inter on 2026-09-28. Not Geist (it has no
+  Devanagari at all). The serif Nepali headings are this marketing site's, not
+  the products'.
 - Real hierarchy — headings and body must not look alike. Body at least 16px on
   prose surfaces (dense tables may use 14px with the row rhythm below); line
   height about 1.5; prose measure 65–75 characters; never justified; never
