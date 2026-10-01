@@ -1,0 +1,45 @@
+---
+/** A plain text page (privacy policy, account deletion): the site's header
+ *  and footer around one readable column. Used by the Markdown pages. */
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const { frontmatter } = Astro.props;
+const site = Astro.site ?? new URL('https://epahichan.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/epahichan-mark-32.png" />
+    <title>{frontmatter.title} · ePahichan</title>
+    <meta name="description" content={frontmatter.description} />
+    <link rel="canonical" href={canonical} />
+  </head>
+  <body>
+    <Header />
+    <main class="legal"><slot /></main>
+    <Footer />
+  </body>
+</html>
+<style is:global>
+  main.legal { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; color: var(--ink); }
+  main.legal h1 { font-size: 34px; line-height: 1.25; margin: 0 0 8px; }
+  main.legal h2 { font-size: 22px; line-height: 1.3; margin: 40px 0 0; }
+  main.legal p, main.legal li { font-size: 17px; line-height: 1.6; color: var(--ink-muted); }
+  main.legal ul, main.legal ol { padding-left: 22px; }
+  main.legal li { margin-top: 8px; }
+  main.legal strong { color: var(--ink); }
+  main.legal a { color: var(--brand-ink); }
+  main.legal table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 16px; }
+  main.legal th, main.legal td { text-align: left; vertical-align: top; padding: 12px 10px; border-bottom: 1px solid var(--line, #dee1e6); line-height: 1.5; }
+  main.legal th { color: var(--ink); }
+  main.legal td { color: var(--ink-muted); }
+  @media (max-width: 640px) { main.legal table, main.legal tbody, main.legal tr, main.legal td, main.legal th { display: block; } main.legal thead { display: none; } main.legal td:first-child { color: var(--ink); font-weight: 600; border-bottom: 0; padding-bottom: 0; } }
+</style>
