@@ -6,3 +6,10 @@ dist/
 !.env.example
 .pnpm-store/
 .DS_Store
+*.log
+*.jks
+*.keystore
+*.p12
+key.properties
+google-services.json
+service-account*.json
