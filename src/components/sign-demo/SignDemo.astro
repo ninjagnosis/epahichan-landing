@@ -1,9 +1,17 @@
 ---
-import { Icon } from 'astro-icon/components';
-import { t } from '../../i18n';
+import Check from '@lucide/astro/icons/check';
+import Fingerprint from '@lucide/astro/icons/fingerprint-pattern';
+import Lock from '@lucide/astro/icons/lock';
+import RotateCcw from '@lucide/astro/icons/rotate-ccw';
+import Signature from '@lucide/astro/icons/signature';
+import UserRound from '@lucide/astro/icons/user-round';
+import X from '@lucide/astro/icons/x';
 import './sign-demo.css';
 
-const strings = t.signDemo;
+const strings = {
+  heading: 'Make a signature yourself',
+  contractDefaultText: 'Muna will deliver two hundred bags to Madan at Rs. 450 each, by the end of Asar.',
+};
 ---
 
 {/*
@@ -19,21 +27,21 @@ const strings = t.signDemo;
   <div class="sign-demo-head">
     <h2 id="sign-demo-heading">{strings.heading}</h2>
     <button type="button" class="replay" data-replay>
-      <Icon name="lucide:rotate-ccw" aria-hidden="true" />
+      <RotateCcw aria-hidden="true" />
       Reset
     </button>
   </div>
 
   <div class="stage" data-stage data-original={strings.contractDefaultText}>
     <div class="party">
-      <div class="avatar" aria-hidden="true"><Icon name="lucide:user-round" /></div>
+      <div class="avatar" aria-hidden="true"><UserRound /></div>
       <p class="party-name">Muna</p>
       <div class="verdict" data-verdict="muna" data-state="idle">
-        <Icon class="verdict-icon verdict-ok" name="lucide:check" aria-hidden="true" />
-        <Icon class="verdict-icon verdict-bad" name="lucide:x" aria-hidden="true" />
+        <Check class="verdict-icon verdict-ok" aria-hidden="true" />
+        <X class="verdict-icon verdict-bad" aria-hidden="true" />
       </div>
       <p class="key-label">
-        <Icon name="lucide:signature" aria-hidden="true" />
+        <Signature aria-hidden="true" />
         digital signature
       </p>
       <p class="key-value" data-key="muna">—</p>
@@ -50,11 +58,11 @@ const strings = t.signDemo;
         ></textarea>
         <div class="doc-seals">
           <span class="seal" data-seal="muna" aria-hidden="true">
-            <Icon name="lucide:signature" />
+            <Signature />
             Muna
           </span>
           <span class="seal" data-seal="madan" aria-hidden="true">
-            <Icon name="lucide:signature" />
+            <Signature />
             Madan
           </span>
         </div>
@@ -63,14 +71,14 @@ const strings = t.signDemo;
       <div class="prints">
         <div class="print">
           <p class="key-label">
-            <Icon name="lucide:lock" aria-hidden="true" />
+            <Lock aria-hidden="true" />
             fingerprint when signed
           </p>
           <p class="key-value" data-hash-original>—</p>
         </div>
         <div class="print">
           <p class="key-label">
-            <Icon name="lucide:fingerprint" aria-hidden="true" />
+            <Fingerprint aria-hidden="true" />
             fingerprint now
           </p>
           <p class="key-value" data-hash-now data-match="same">—</p>
@@ -79,14 +87,14 @@ const strings = t.signDemo;
     </div>
 
     <div class="party">
-      <div class="avatar" aria-hidden="true"><Icon name="lucide:user-round" /></div>
+      <div class="avatar" aria-hidden="true"><UserRound /></div>
       <p class="party-name">Madan</p>
       <div class="verdict" data-verdict="madan" data-state="idle">
-        <Icon class="verdict-icon verdict-ok" name="lucide:check" aria-hidden="true" />
-        <Icon class="verdict-icon verdict-bad" name="lucide:x" aria-hidden="true" />
+        <Check class="verdict-icon verdict-ok" aria-hidden="true" />
+        <X class="verdict-icon verdict-bad" aria-hidden="true" />
       </div>
       <p class="key-label">
-        <Icon name="lucide:signature" aria-hidden="true" />
+        <Signature aria-hidden="true" />
         digital signature
       </p>
       <p class="key-value" data-key="madan">—</p>

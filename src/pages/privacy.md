@@ -1,5 +1,5 @@
 ---
-layout: ../layouts/LegalLayout.astro
+layout: ../layouts/Legal.astro
 title: Privacy policy
 description: What the ePahichan app collects, why, who it is shared with, and how to delete your account.
 ---

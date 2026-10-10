@@ -1,13 +1,30 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Products from '../components/home/Products.astro';
+import HowItWorks from '../components/home/HowItWorks.astro';
+import WhoFor from '../components/home/WhoFor.astro';
+import Trust from '../components/home/Trust.astro';
 import SignDemo from '../components/sign-demo/SignDemo.astro';
-import Faq from '../components/Faq.astro';
+import Faq from '../components/site/Faq.astro';
+import CtaBand from '../components/site/CtaBand.astro';
+import { homeFaq } from '../data/faq';
+import { faqJsonLd } from '../lib/seo';
 ---
-<BaseLayout>
-  <main>
-    <Hero />
-    <SignDemo />
-    <Faq />
-  </main>
-</BaseLayout>
+<Base
+  title="ePahichan: digital signatures for Nepal"
+  description="Get a digital signature certificate with your citizenship and a selfie, sign PDFs from your phone, or add signing to your application with the ePahichan API."
+  path="/"
+  jsonLd={[faqJsonLd(homeFaq)]}
+>
+  <Hero />
+  <Products />
+  <HowItWorks />
+  <section class="section demo" data-reveal>
+    <div class="wrap"><SignDemo /></div>
+  </section>
+  <WhoFor />
+  <Trust />
+  <Faq items={homeFaq} />
+  <CtaBand />
+</Base>

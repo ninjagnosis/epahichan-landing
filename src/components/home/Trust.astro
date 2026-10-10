@@ -1,0 +1,35 @@
+---
+import Scale from '@lucide/astro/icons/scale';
+import BadgeCheck from '@lucide/astro/icons/badge-check';
+import FileLock from '@lucide/astro/icons/file-lock';
+const points = [
+  { Icon: Scale, h: 'Recognised by Nepali law', p: 'Section 5 of the Electronic Transactions Act, 2063 gives a digital signature legal validity where a signature is required, if it is made by the procedures in the Act and its Rules.' },
+  { Icon: BadgeCheck, h: 'Certificates from NCC', p: 'Each signature carries the signer’s own certificate, issued by Nepal Certifying Company, the licensed certifying authority.' },
+  { Icon: FileLock, h: 'Changes show', p: 'Change one character of a signed PDF and the signature stops matching. Anyone can check, without asking us.' },
+];
+---
+<section class="section trust surface" data-reveal>
+  <div class="wrap">
+    <h2>Why a signature holds up</h2>
+    <ul class="points" data-stagger>
+      {points.map(({ Icon, h, p }, i) => (
+        <li style={`--i:${i}`}>
+          <Icon size={26} stroke-width={1.75} aria-hidden="true" />
+          <h3>{h}</h3>
+          <p class="muted">{p}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="note muted">Some documents are outside the Act, including deeds that transfer title to land, wills and negotiable instruments. A digital signature does not change that.</p>
+  </div>
+</section>
+
+<style>
+  .surface { background: var(--surface); border-block: 1px solid var(--line); }
+  .points { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-7); }
+  li :global(svg) { color: var(--link); margin-bottom: var(--space-4); }
+  h3 { margin-bottom: var(--space-3); }
+  li p { font-size: 16px; }
+  .note { margin-top: var(--space-7); max-width: 60ch; font-size: 16px; }
+  @media (max-width: 767px) { .points { grid-template-columns: 1fr; gap: var(--space-6); } }
+</style>

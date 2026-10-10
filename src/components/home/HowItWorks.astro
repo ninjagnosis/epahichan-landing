@@ -1,0 +1,32 @@
+---
+const steps = ['Get your certificate', 'Sign a PDF', 'Anyone can check it'];
+---
+<section class="how on-stage">
+  <div class="wrap">
+    <h2>Three steps</h2>
+    <ol class="steps">
+      {steps.map((s, i) => (
+        <li>
+          <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="t">{s}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .how { padding-block: var(--space-10); }
+  .how h2 { margin-bottom: var(--space-8); color: var(--stage-ink); }
+  @media (max-width: 767px) { .how { padding-block: var(--space-9); } }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-7); }
+  li { display: grid; align-content: start; gap: var(--space-5); padding-top: var(--space-5); border-top: 2px solid var(--stage-line); }
+  li:last-child { border-top-color: var(--stage-ink); }
+  .n { font-size: clamp(4.5rem, 3rem + 6vw, 8.5rem); font-weight: 600; line-height: 0.9; color: var(--stage-muted); font-variant-numeric: tabular-nums; }
+  .t { font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem); font-weight: 600; line-height: 1.2; max-width: 14ch; }
+  @media (max-width: 767px) {
+    .steps { grid-template-columns: 1fr; gap: var(--space-6); }
+    li { grid-template-columns: auto 1fr; align-items: center; gap: var(--space-5); }
+    .n { font-size: 4rem; }
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import SignDemo from '../components/sign-demo/SignDemo.astro';
+import CtaBand from '../components/site/CtaBand.astro';
+import Related from '../components/site/Related.astro';
+import { breadcrumbJsonLd } from '../lib/seo';
+---
+<Base title="How a digital signature works" description="Make and break a digital signature in your browser. See how a private key signs a document, how a public key checks it, and why one changed character is caught." path="/how-signing-works" jsonLd={[breadcrumbJsonLd([{ name: 'How signing works', path: '/how-signing-works' }])]}>
+  <section class="section">
+    <div class="wrap">
+      <h1 data-enter>How a digital signature works</h1>
+      <div class="prose" data-enter style="--d:1">
+        <p>A signature on paper is a picture of a hand movement, and a picture can be copied. A digital signature is calculated from the document itself and a secret key, so it fits that document and no other.</p>
+        <h2>Two keys</h2>
+        <ul>
+          <li><strong>Private key.</strong> Stays with the signer. It makes the signature.</li>
+          <li><strong>Public key.</strong> Can be given to anyone. It checks the signature.</li>
+        </ul>
+        <p>Anyone holding the public key can check a signature without asking the signer, and without asking us.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface">
+    <div class="wrap">
+      <SignDemo />
+      <p class="note prose">The signatures above are real, and they are made in this browser. They are not ePahichan signatures: the keys are generated fresh each time and are tied to no one, so they say that somebody signed, not that a particular person did. Tying a key to a person is what a certificate does.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="prose">
+        <h2>What a signature does not show</h2>
+        <p>A signature shows who signed what. It does not show when. The time on a device can be set to anything, so proof of time needs a trusted timestamp, which is a separate record.</p>
+        <h2>What the law says</h2>
+        <p>Section 5 of the Electronic Transactions Act, 2063 gives a digital signature legal validity where the law requires a signature, if the signature is made by the procedures in the Act and the Rules made under it. The Act does not cover every document: deeds that transfer title to land, wills, negotiable instruments and powers of attorney are excluded.</p>
+        <p>Read more in <a href="/blog">our guides</a> and the <a href="/glossary">glossary</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <Related groups={[{ h: 'Products', items: [{ href: '/products/app', label: 'ePahichan app' }, { href: '/products/signing-api', label: 'Signing API' }] }, { h: 'Learn', items: [{ href: '/glossary/digital-signature', label: 'What is a digital signature?' }, { href: '/glossary/digital-signature-certificate', label: 'What is a certificate?' }] }]} />
+  <CtaBand />
+</Base>
+
+<style>
+  h1 { margin-bottom: var(--space-6); }
+  .surface { background: var(--surface); border-block: 1px solid var(--line); }
+  .note { margin-top: var(--space-6); font-size: 16px; color: var(--ink-muted); }
+</style>

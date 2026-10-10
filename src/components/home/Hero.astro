@@ -1,0 +1,57 @@
+---
+import { APP_URL } from '../../config/site';
+const words = 'A digital signature for every Nepali'.split(' ');
+---
+<section class="hero">
+  <div class="wrap grid">
+    <div class="copy">
+      <h1 class="display">{words.map((w, i) => (<><span class="w"><span style={`--i:${i}`}>{w}</span></span>{' '}</>))}</h1>
+      <p class="sub">Apply with your citizenship and a selfie. Sign PDFs from your phone. Anyone can check the signature.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={APP_URL}>Open the app</a>
+        <a class="btn btn-secondary" href="/how-signing-works">Make a signature in your browser</a>
+      </div>
+    </div>
+    <figure class="stage" aria-label="A signed PDF, as ePahichan shows it">
+      <div class="paper">
+        <p class="doc-title">Loan agreement.pdf</p>
+        <div class="lines" aria-hidden="true"><i></i><i></i><i></i><i class="short"></i></div>
+        <div class="seal">
+          <span class="tick" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+          <div>
+            <p class="seal-line">Signature valid</p>
+            <p class="seal-sub">Signed by Sita Sharma</p>
+            <p class="seal-sub">Certificate issued by Nepal Certifying Company</p>
+          </div>
+        </div>
+      </div>
+      <figcaption class="muted">Example. The person shown is made up.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .hero { padding-block: var(--space-9); border-bottom: 1px solid var(--line); }
+  .grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--space-8); align-items: center; }
+  .display { max-width: 12ch; }
+  .sub { margin-top: var(--space-5); max-width: 36ch; font-size: 1.25rem; color: var(--ink-muted); }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-7); }
+  .stage { margin: 0; display: grid; gap: var(--space-3); justify-items: center; }
+  .paper { width: 100%; max-width: 440px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); padding: var(--space-6); }
+  .doc-title { font-family: var(--font-display); font-weight: 600; font-size: 1.125rem; }
+  .lines { display: grid; gap: var(--space-3); margin: var(--space-5) 0 var(--space-6); }
+  .lines i { display: block; height: 10px; border-radius: 5px; background: var(--line); }
+  .lines i.short { width: 55%; }
+  .seal { display: flex; gap: var(--space-4); align-items: flex-start; padding-top: var(--space-5); border-top: 1px solid var(--line); }
+  .tick { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ok); color: #FFFFFF; }
+  .seal-line { font-weight: 600; }
+  .seal-sub { font-size: 15px; color: var(--ink-muted); }
+  .seal p + p { margin-top: 0; }
+  figcaption { font-size: 14px; }
+  @media (max-width: 959px) {
+    .hero { padding-block: var(--space-8); }
+    .grid { grid-template-columns: 1fr; gap: var(--space-7); }
+  }
+</style>

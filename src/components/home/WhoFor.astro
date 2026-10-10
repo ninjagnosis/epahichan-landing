@@ -1,0 +1,33 @@
+---
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import { Image } from 'astro:assets';
+import { solutions } from '../../data/solutions';
+import fingerprint from '../../assets/photos/fingerprint.jpg';
+---
+<section class="section" data-reveal>
+  <div class="wrap grid">
+    <div class="photo-frame"><Image src={fingerprint} alt="A fingerprint being scanned on a phone" widths={[440, 880]} sizes="(max-width: 959px) 100vw, 400px" quality={80} format="webp" class="photo" /></div>
+    <div>
+      <h2>Who it's for</h2>
+      <ul class="list">
+        {solutions.map((s) => (
+          <li><a href={`/solutions/${s.slug}`}><span class="name">{s.name}</span><ArrowRight class="go" size={18} stroke-width={2} aria-hidden="true" /></a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: var(--space-8); align-items: center; }
+  .photo-frame { overflow: hidden; border-radius: var(--radius-panel); aspect-ratio: 4 / 5; background: var(--surface); }
+  .photo { width: 100%; height: 100%; object-fit: cover; }
+  h2 { margin-bottom: var(--space-6); }
+  .list { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line); }
+  a { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); min-height: 64px; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+  .name { font-size: 18px; font-weight: 500; transition: color var(--fast) var(--ease); }
+  a :global(.go) { color: var(--link); transition: transform var(--fast) var(--ease); }
+  a:hover .name { color: var(--link); }
+  a:hover :global(.go) { transform: translateX(4px); }
+  @media (max-width: 959px) { .grid { grid-template-columns: 1fr; } .photo-frame { max-width: 400px; } }
+</style>

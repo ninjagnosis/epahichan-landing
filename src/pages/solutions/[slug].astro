@@ -1,0 +1,75 @@
+---
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/site/CtaBand.astro';
+import Faq from '../../components/site/Faq.astro';
+import Related from '../../components/site/Related.astro';
+import { posts } from '../../lib/posts';
+import { productLink } from '../../data/links';
+import { solutions, type Solution } from '../../data/solutions';
+import { faqJsonLd, breadcrumbJsonLd, serviceJsonLd } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return solutions.map((s) => ({ params: { slug: s.slug }, props: { s } }));
+}
+const { s } = Astro.props as { s: Solution };
+const path = `/solutions/${s.slug}`;
+const guides = (await posts()).filter((x) => !x.data.draft && x.data.tags.some((t) => s.tags.includes(t))).slice(0, 4);
+---
+<Base title={`Digital signatures for ${s.name.toLowerCase()}`} description={s.description} path={path} jsonLd={[serviceJsonLd(s), faqJsonLd(s.faq), breadcrumbJsonLd([{ name: s.name, path }])]}>
+  <section class="top">
+    <div class="wrap grid">
+      <h1 data-enter>{s.headline}</h1>
+      <div data-enter style="--d:1">
+        <h2 class="small-h">What gets signed</h2>
+        <ul class="docs">{s.documents.map((d) => <li>{d}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-reveal>
+    <div class="wrap two">
+      <h2>What changes</h2>
+      <ul class="does" data-stagger>
+        {s.does.map((d, i) => (
+          <li style={`--i:${i}`}><h3>{d.h}</h3><p class="muted">{d.p}</p></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight limits" data-reveal>
+    <div class="wrap two">
+      <h2>What to check</h2>
+      <p>{s.limits}</p>
+    </div>
+  </section>
+
+  <Faq items={s.faq} />
+
+  <Related groups={[
+    { h: 'Products', items: s.products.map((x) => productLink(x)!).filter(Boolean) },
+    { h: 'Guides', items: guides.map((g) => ({ href: `/blog/${g.id}`, label: g.data.title })) },
+    { h: 'Other solutions', items: solutions.filter((x) => x.slug !== s.slug).map((x) => ({ href: `/solutions/${x.slug}`, label: x.name })) },
+  ]} />
+
+  <CtaBand />
+</Base>
+
+<style>
+  .top { padding-block: var(--space-9); border-bottom: 1px solid var(--line); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); align-items: center; }
+  h1 { max-width: 14ch; font-size: clamp(2.25rem, 1.6rem + 2.2vw, 3.25rem); }
+  .small-h { font-size: 1rem; font-family: var(--font-sans); font-weight: 600; color: var(--ink-muted); margin-bottom: var(--space-3); }
+  .docs { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line); }
+  .docs li { padding: var(--space-3) 0; border-top: 1px solid var(--line); font-weight: 500; }
+  .two { display: grid; grid-template-columns: 1fr 1.4fr; gap: var(--space-8); align-items: start; }
+  .two h2 { margin: 0; }
+  .does { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line); }
+  .does li { padding: var(--space-5) 0; border-top: 1px solid var(--line); }
+  .does h3 { font-size: 1.125rem; margin-bottom: var(--space-2); }
+  .limits { background: var(--surface); border-block: 1px solid var(--line); }
+  @media (max-width: 959px) {
+    .grid, .two { grid-template-columns: 1fr; gap: var(--space-6); }
+    .top { padding-block: var(--space-7) var(--space-8); }
+  }
+</style>

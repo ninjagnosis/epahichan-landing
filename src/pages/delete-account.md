@@ -1,5 +1,5 @@
 ---
-layout: ../layouts/LegalLayout.astro
+layout: ../layouts/Legal.astro
 title: Delete your account
 description: How to delete your ePahichan account, and what is deleted and what is kept.
 ---

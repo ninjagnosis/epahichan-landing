@@ -1,40 +1,56 @@
+/* ePahichan tokens. Every value here is listed in DESIGN.md; nothing outside it. */
 :root {
-  /* Light only, deliberately. Without this the browser still paints form
-     controls, scrollbars and the text caret dark for a visitor whose OS is
-     dark, against a page that is always light. */
-  color-scheme: light;
-
-  --paper: #ffffff;
-  --surface: #f6f7f9;
-  --ink: #14171c;
+  --canvas: #FFFFFF;
+  --surface: #F6F7F9;
+  --subtle: #ECEEF2;
+  --line: #DEE1E6;
+  --ink: #14171C;
   --ink-muted: #495058;
-  --line: #dee1e6;
-  /* Brand red measured from the board-supplied mark; see BRAND.md. */
-  --brand: #e31b23;
-  --brand-ink: #b30712;
+  --brand: #B30712;
+  --brand-hover: #6F0006;
+  --on-brand: #FFFFFF;
+  --brand-ink: #B30712;
+  --link: #B30712;
+  --accent: #E31B23;
+  --on-accent: #FFFFFF;
+  --stage: #6F0006;
+  --stage-ink: #FFFFFF;
+  --stage-muted: #F2C9CB;
+  --stage-line: #93353B;
+  --ok: #1B6B3A;
+  --bad: #B3261E;
+  --error: #B3261E;
 
-  /*
-    Valid / invalid. The palette had no green because nothing needed one until
-    the demo had a passing state to show. Both are dark enough to carry white
-    icons at AA, and neither is the brand red doing double duty.
-  */
-  --ok: #0f7b3d;
-  --bad: #c0271c;
-
-  /* The footer is the one dark surface on an otherwise light-only page. */
-  --footer-bg: #0d1015;
-  --footer-ink: #f2f4f7;
-  --footer-muted: #a8afb9;
-  --footer-line: rgba(255, 255, 255, 0.14);
+  /* Inter for reading (body, forms, lists); Poppins for headings, buttons and navigation. */
+  --font-sans: 'Inter Variable', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Poppins', 'Poppins Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --radius-control: 8px;
   --radius-panel: 12px;
-  --max-width: 1120px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  --max-width: 1200px;
+  --measure: 680px;
   --gutter: 16px;
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --fast: 150ms;
+  --slow: 250ms;
+
+  color-scheme: light;
 }
 
 @media (min-width: 768px) {
-  :root {
-    --gutter: 32px;
-  }
+  :root { --gutter: 32px; }
 }
