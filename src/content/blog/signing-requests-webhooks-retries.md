@@ -1,7 +1,7 @@
 ---
 title: "Adding signing to your application: requests, webhooks and safe retries"
 description: How a signing integration is shaped. Create a request from your server, receive a webhook when it is signed, and make retries safe. Written for developers.
-date: 2026-10-10
+date: 2026-10-09
 tags: [developers, digital-signature]
 faq:
   - q: "Should the browser or mobile app call the signing API directly?"
