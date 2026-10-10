@@ -1,7 +1,7 @@
 ---
 title: "Checking National ID details by API: match or no match, and why that is enough"
 description: How an ID check that returns only match or no match works, the four fields it needs, and what developers should know about tokens and server calls.
-date: 2026-10-10
+date: 2026-10-09
 tags: [identity, developers]
 faq:
   - q: "What does the ID check return?"

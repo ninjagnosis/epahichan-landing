@@ -1,7 +1,7 @@
 ---
 title: "OTP or digital signature: what you can prove when a borrower disputes a loan"
 description: An SMS code proves a phone received a number. A digital signature ties a named borrower to the exact loan PDF. What each gives a bank in a dispute.
-date: 2026-10-10
+date: 2026-10-04
 tags: [banks, digital-signature]
 faq:
   - q: "Is an OTP enough to prove a borrower agreed to a loan?"

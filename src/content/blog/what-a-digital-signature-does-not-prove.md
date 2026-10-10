@@ -1,7 +1,7 @@
 ---
 title: "What a digital signature does not prove: the question of when"
 description: A signature shows who signed what, not when. Why a device clock proves nothing about time, and what a trusted timestamp adds to a signed document.
-date: 2026-10-10
+date: 2026-10-07
 tags: [digital-signature, guides]
 faq:
   - q: "Does a digital signature include the time of signing?"

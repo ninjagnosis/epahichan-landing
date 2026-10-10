@@ -1,7 +1,7 @@
 ---
 title: "Documents you cannot sign digitally in Nepal: what Section 77 leaves out"
 description: The Electronic Transactions Act does not cover every document. Land deeds, wills, negotiable instruments and powers of attorney are among those excluded.
-date: 2026-10-10
+date: 2026-10-02
 tags: [digital-signature, guides]
 faq:
   - q: "Can I sign a land sale deed digitally?"

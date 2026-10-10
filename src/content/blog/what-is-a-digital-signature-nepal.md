@@ -1,7 +1,7 @@
 ---
 title: "What a digital signature is, and what it is worth in Nepal"
 description: A digital signature is mathematics, not a picture of your name. How the two keys work, what a certificate adds, and what Section 5 of the Act says.
-date: 2026-10-10
+date: 2026-09-29
 tags: [digital-signature, guides]
 faq:
   - q: "Is a digital signature the same as a scanned signature?"

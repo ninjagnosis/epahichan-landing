@@ -1,7 +1,7 @@
 ---
 title: "Digital signature or electronic signature: which one does your document need?"
 description: A typed name, a drawn squiggle and a clicked box are electronic signatures. A digital signature binds a person to an exact file. Here is how to choose.
-date: 2026-10-10
+date: 2026-10-01
 tags: [digital-signature, guides]
 faq:
   - q: "Is an electronic signature legally valid in Nepal?"

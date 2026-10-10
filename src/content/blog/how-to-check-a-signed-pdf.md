@@ -1,7 +1,7 @@
 ---
 title: "How to check that a signed PDF is genuine and unchanged"
 description: A signed PDF is only worth something if it verifies. What a signature check looks at, what a pass and a fail mean, and what a check cannot tell you.
-date: 2026-10-10
+date: 2026-10-06
 tags: [digital-signature, guides]
 faq:
   - q: "Do I need the signer's permission to check a signature?"
