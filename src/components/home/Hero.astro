@@ -25,7 +25,6 @@ const words = 'A digital signature for every Nepali'.split(' ');
         </div>
         <p class="valid"><CircleCheck size={20} aria-hidden="true" />Signed with ePahichan. Signature valid.</p>
       </div>
-      <figcaption>Example. The person shown is made up.</figcaption>
     </figure>
   </div>
 </section>
@@ -36,7 +35,7 @@ const words = 'A digital signature for every Nepali'.split(' ');
   .display { max-width: 12ch; }
   .sub { margin-top: var(--space-5); max-width: 36ch; font-size: 1.25rem; color: var(--ink-muted); }
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-7); }
-  .stage { margin: 0; display: grid; gap: var(--space-3); justify-items: center; }
+  .stage { margin: 0; display: grid; justify-items: center; }
   .sheet {
     width: 100%; max-width: 400px; background: var(--canvas);
     border: 1px solid var(--line); border-radius: var(--radius-panel);
@@ -54,7 +53,6 @@ const words = 'A digital signature for every Nepali'.split(' ');
     color: var(--ok); font-weight: 500; font-size: 15px;
   }
   .valid :global(svg) { flex: none; }
-  figcaption { font-size: 14px; color: var(--ink-muted); }
   @media (max-width: 959px) {
     .hero { padding-block: var(--space-8); }
     .grid { grid-template-columns: 1fr; gap: var(--space-7); }
