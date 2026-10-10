@@ -1,4 +1,6 @@
 ---
+import FileText from '@lucide/astro/icons/file-text';
+import CircleCheck from '@lucide/astro/icons/circle-check';
 import { APP_URL } from '../../config/site';
 const words = 'A digital signature for every Nepali'.split(' ');
 ---
@@ -13,21 +15,12 @@ const words = 'A digital signature for every Nepali'.split(' ');
       </div>
     </div>
     <figure class="stage" aria-label="A signed PDF, as ePahichan shows it">
-      <div class="paper">
-        <p class="doc-title">Loan agreement.pdf</p>
-        <div class="lines" aria-hidden="true"><i></i><i></i><i></i><i class="short"></i></div>
-        <div class="seal">
-          <span class="tick" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
-          </span>
-          <div>
-            <p class="seal-line">Signature valid</p>
-            <p class="seal-sub">Signed by Sita Sharma</p>
-            <p class="seal-sub">Certificate issued by Nepal Certifying Company</p>
-          </div>
-        </div>
+      <div class="doc">
+        <p class="file"><FileText size={22} aria-hidden="true" />Loan agreement.pdf</p>
+        <p class="signer">Signed by <strong>Sita Sharma</strong></p>
+        <p class="status"><CircleCheck size={22} aria-hidden="true" />Valid signature. Nothing changed after signing.</p>
       </div>
-      <figcaption class="muted">Example. The person shown is made up.</figcaption>
+      <figcaption>Example. The person shown is made up.</figcaption>
     </figure>
   </div>
 </section>
@@ -39,17 +32,16 @@ const words = 'A digital signature for every Nepali'.split(' ');
   .sub { margin-top: var(--space-5); max-width: 36ch; font-size: 1.25rem; color: var(--ink-muted); }
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-7); }
   .stage { margin: 0; display: grid; gap: var(--space-3); justify-items: center; }
-  .paper { width: 100%; max-width: 440px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); padding: var(--space-6); }
-  .doc-title { font-family: var(--font-display); font-weight: 600; font-size: 1.125rem; }
-  .lines { display: grid; gap: var(--space-3); margin: var(--space-5) 0 var(--space-6); }
-  .lines i { display: block; height: 10px; border-radius: 5px; background: var(--line); }
-  .lines i.short { width: 55%; }
-  .seal { display: flex; gap: var(--space-4); align-items: flex-start; padding-top: var(--space-5); border-top: 1px solid var(--line); }
-  .tick { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ok); color: #FFFFFF; }
-  .seal-line { font-weight: 600; }
-  .seal-sub { font-size: 15px; color: var(--ink-muted); }
-  .seal p + p { margin-top: 0; }
-  figcaption { font-size: 14px; }
+  .doc { width: 100%; max-width: 420px; background: var(--canvas); border: 1px solid var(--line); border-radius: var(--radius-panel); }
+  .doc > p { display: flex; align-items: center; gap: var(--space-3); margin: 0; padding: var(--space-5); }
+  .doc > p + p { border-top: 1px solid var(--line); }
+  .file { font-weight: 500; }
+  .file :global(svg) { flex: none; color: var(--brand); }
+  .signer { font-size: 1.125rem; color: var(--ink-muted); }
+  .signer strong { color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 1.5rem; }
+  .status { color: var(--ok); font-weight: 500; }
+  .status :global(svg) { flex: none; }
+  figcaption { font-size: 14px; color: var(--ink-muted); }
   @media (max-width: 959px) {
     .hero { padding-block: var(--space-8); }
     .grid { grid-template-columns: 1fr; gap: var(--space-7); }
