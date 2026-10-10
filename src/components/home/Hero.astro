@@ -14,7 +14,7 @@ const words = 'A digital signature for every Nepali'.split(' ');
         <a class="btn btn-secondary" href="/how-signing-works">Make a signature in your browser</a>
       </div>
     </div>
-    <figure class="stage" aria-label="Example: a loan agreement signed with ePahichan">
+    <figure class="example" aria-label="Example: a loan agreement signed with ePahichan">
       <div class="sheet">
         <p class="doc-title">Loan agreement</p>
         <p class="doc-text">Sita Sharma borrows Rs 5,00,000 from the lender and repays it in 36 monthly instalments.</p>
@@ -35,7 +35,7 @@ const words = 'A digital signature for every Nepali'.split(' ');
   .display { max-width: 12ch; }
   .sub { margin-top: var(--space-5); max-width: 36ch; font-size: 1.25rem; color: var(--stage-muted); }
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-7); }
-  .stage { margin: 0; display: grid; justify-items: stretch; }
+  .example { margin: 0; }
   .sheet {
     width: 100%; min-height: 460px; display: flex; flex-direction: column; background: var(--canvas); color: var(--ink);
     border-radius: var(--radius-panel);
@@ -56,7 +56,6 @@ const words = 'A digital signature for every Nepali'.split(' ');
   @media (max-width: 959px) {
     .hero { padding-block: var(--space-8); }
     .grid { grid-template-columns: 1fr; gap: var(--space-7); }
-    .stage { justify-items: stretch; }
     .sheet { max-width: none; min-height: 0; padding: var(--space-6); }
   }
 </style>
