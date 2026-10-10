@@ -14,8 +14,11 @@ const words = 'A digital signature for every Nepali'.split(' ');
         <a class="btn btn-secondary" href="/how-signing-works">Make a signature in your browser</a>
       </div>
     </div>
-    <figure class="stage" aria-label="Example: a document signed with ePahichan">
+    <figure class="stage" aria-label="Example: a loan agreement signed with ePahichan">
       <div class="sheet">
+        <p class="doc-title">Loan agreement</p>
+        <p class="doc-text">Sita Sharma borrows Rs 5,00,000 from the lender and repays it in 36 monthly instalments.</p>
+        <p class="doc-text">Both parties have read this agreement and sign it below.</p>
         <div class="sign">
           <p class="hand" aria-hidden="true">Sita Sharma</p>
           <p class="who">Sita Sharma, borrower</p>
@@ -34,22 +37,26 @@ const words = 'A digital signature for every Nepali'.split(' ');
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-7); }
   .stage { margin: 0; display: grid; justify-items: end; }
   .sheet {
-    width: 100%; max-width: 540px; background: var(--canvas); color: var(--ink);
+    width: 100%; max-width: 560px; min-height: 460px; display: flex; flex-direction: column; background: var(--canvas); color: var(--ink);
     border-radius: var(--radius-panel);
     padding: var(--space-8) var(--space-7) var(--space-7);
   }
-  .hand { font-family: 'Caveat', cursive; font-weight: 600; font-size: 2.5rem; line-height: 1; color: #1F2A5A; padding-bottom: var(--space-2); border-bottom: 1px solid var(--ink); }
+  .doc-title { font-family: var(--font-display); font-weight: 600; font-size: 1.5rem; margin-bottom: var(--space-5); }
+  .doc-text { font-size: 17px; line-height: 1.55; color: var(--ink-muted); }
+  .doc-text + .doc-text { margin-top: var(--space-3); }
+  .sign { margin: var(--space-8) 0 var(--space-6); }
+  .hand { font-family: 'Caveat', cursive; font-weight: 600; font-size: 3rem; line-height: 1; color: #1F2A5A; padding-bottom: var(--space-2); border-bottom: 1px solid var(--ink); }
   .who { margin-top: var(--space-2); font-size: 14px; color: var(--ink-muted); }
   .valid {
-    display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-6);
+    display: flex; align-items: center; gap: var(--space-2);
     padding-top: var(--space-4); border-top: 1px solid var(--line);
-    color: var(--ok); font-weight: 500; font-size: 15px;
+    color: var(--ok); font-weight: 500; font-size: 16px; margin-top: auto;
   }
   .valid :global(svg) { flex: none; }
   @media (max-width: 959px) {
     .hero { padding-block: var(--space-8); }
     .grid { grid-template-columns: 1fr; gap: var(--space-7); }
     .stage { justify-items: stretch; }
-    .sheet { max-width: none; padding: var(--space-6); }
+    .sheet { max-width: none; min-height: 0; padding: var(--space-6); }
   }
 </style>
