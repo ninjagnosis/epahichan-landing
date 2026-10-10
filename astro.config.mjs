@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 // Static build, no trailing slashes. The sitemap is written after the build
 // from dist/ (scripts/sitemap.mjs).
 export default defineConfig({
+  markdown: { shikiConfig: { theme: "github-light" } },
   site: 'https://epahichan.com',
   output: 'static',
   trailingSlash: 'never',
