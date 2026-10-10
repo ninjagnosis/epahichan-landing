@@ -31,15 +31,15 @@ const words = 'A digital signature for every Nepali'.split(' ');
 
 <style>
   .hero { padding-block: var(--space-9); border-bottom: 1px solid var(--line); }
-  .grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--space-8); align-items: center; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); align-items: center; }
   .display { max-width: 12ch; }
   .sub { margin-top: var(--space-5); max-width: 36ch; font-size: 1.25rem; color: var(--ink-muted); }
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-7); }
-  .stage { margin: 0; display: grid; justify-items: center; }
+  .stage { margin: 0; display: grid; justify-items: end; }
   .sheet {
-    width: 100%; max-width: 400px; background: var(--canvas);
+    width: 100%; max-width: 540px; background: var(--canvas);
     border: 1px solid var(--line); border-radius: var(--radius-panel);
-    padding: var(--space-7) var(--space-6) var(--space-6);
+    padding: var(--space-8) var(--space-7) var(--space-7);
   }
   .doc-title { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; margin-bottom: var(--space-4); }
   .doc-text { font-size: 15px; line-height: 1.5; color: var(--ink-muted); }
@@ -56,5 +56,7 @@ const words = 'A digital signature for every Nepali'.split(' ');
   @media (max-width: 959px) {
     .hero { padding-block: var(--space-8); }
     .grid { grid-template-columns: 1fr; gap: var(--space-7); }
+    .stage { justify-items: stretch; }
+    .sheet { max-width: none; padding: var(--space-6); }
   }
 </style>
