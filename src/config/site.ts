@@ -18,3 +18,8 @@ export const OFFICE_LINE = `${ADDRESS.street}, ${ADDRESS.locality}, ${ADDRESS.co
 
 /** The certifying authority behind every certificate. */
 export const CA_NAME = 'Nepal Certifying Company';
+
+/** The company the product belongs to. The footer links here, and structured data names it as the parent. */
+export const PARENT_COMPANY_NAME = 'Ninja Infosys LLC';
+export const PARENT_COMPANY_URL = 'https://ninjainfosys.com';
+export const PARENT_COMPANY_ID = 'https://ninjainfosys.com/#organization';

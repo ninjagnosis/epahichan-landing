@@ -1,4 +1,4 @@
-import { ADDRESS, COMPANY, CONTACT_EMAIL, CONTACT_PHONE_JSONLD, SITE_NAME, SITE_URL } from '../config/site';
+import { ADDRESS, COMPANY, CONTACT_EMAIL, CONTACT_PHONE_JSONLD, PARENT_COMPANY_ID, PARENT_COMPANY_NAME, PARENT_COMPANY_URL, SITE_NAME, SITE_URL } from '../config/site';
 
 /** The one URL a page is known by: lowercase, no query, no .html, no trailing slash except root. */
 export function canonicalFor(path: string): string {
@@ -30,7 +30,7 @@ export function orgJsonLd() {
     telephone: CONTACT_PHONE_JSONLD,
     address: { '@type': 'PostalAddress', addressLocality: ADDRESS.locality, addressCountry: ADDRESS.country },
     contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', telephone: CONTACT_PHONE_JSONLD, email: CONTACT_EMAIL, areaServed: 'NP', availableLanguage: ['en', 'ne'] },
-    parentOrganization: { '@type': 'Organization', name: COMPANY },
+    parentOrganization: { '@type': 'Organization', '@id': PARENT_COMPANY_ID, name: PARENT_COMPANY_NAME, url: PARENT_COMPANY_URL },
   };
 }
 

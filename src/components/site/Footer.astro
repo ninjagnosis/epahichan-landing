@@ -1,6 +1,6 @@
 ---
 import { footerColumns } from '../../data/nav';
-import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFICE_LINE, CA_NAME } from '../../config/site';
+import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFICE_LINE, CA_NAME, PARENT_COMPANY_NAME, PARENT_COMPANY_URL } from '../../config/site';
 ---
 <footer class="site-footer">
   <div class="wrap">
@@ -23,7 +23,7 @@ import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFIC
         </nav>
       ))}
     </div>
-    <p class="legal muted">© {new Date().getFullYear()} ePahichan, built and run by {COMPANY}. Digital signature certificates are issued by {CA_NAME}. ePahichan is not a government service.</p>
+    <p class="legal muted">© {new Date().getFullYear()} ePahichan, built and run by {COMPANY}. Digital signature certificates are issued by {CA_NAME}. ePahichan is not a government service. Part of <a href={PARENT_COMPANY_URL} rel="noopener">{PARENT_COMPANY_NAME}</a>.</p>
   </div>
 </footer>
 
@@ -39,6 +39,7 @@ import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFIC
   ul { list-style: none; margin: 0; padding: 0; }
   li a { display: inline-block; padding: 4px 0; color: var(--ink-muted); text-decoration: none; font-size: 14px; }
   li a:hover { color: var(--ink); text-decoration: underline; }
+  .legal a { color: inherit; text-decoration: underline; text-underline-offset: 0.18em; }
   .legal { font-size: 13px; margin-top: var(--space-8); padding-top: var(--space-5); border-top: 1px solid var(--line); }
   @media (max-width: 959px) {
     .top { grid-template-columns: 1fr 1fr; }
