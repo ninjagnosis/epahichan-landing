@@ -1,7 +1,7 @@
 ---
 title: "What a certificate authority is, and why a digital signature needs one"
 description: A certificate authority checks who you are and vouches for your signing key. How trust chains work, why they matter, and what to look for in Nepal.
-date: 2026-10-13
+date: 2026-10-12
 tags: [digital-signature, guides]
 faq:
   - q: "What is a certificate authority?"
