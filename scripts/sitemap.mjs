@@ -11,8 +11,10 @@ import { join, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { parse } from 'node-html-parser';
+import { loadBrand } from '../src/brand/load.mjs';
 
-export const SITE = 'https://epahichan.com';
+/** The site's origin, from the brand document. */
+export const SITE = loadBrand().site.url;
 const MAX_URLS = 50000;
 const MAX_BYTES = 50 * 1024 * 1024;
 
@@ -61,8 +63,9 @@ export function exclusion(page) {
 
 /** Source files whose last commit dates a page. */
 export function sourcesFor(path) {
-  const data = { products: 'src/data/products.ts', solutions: 'src/data/solutions.ts' };
-  if (path === '/') return ['src/pages/index.astro', 'src/components/home', 'src/data/products.ts'];
+  // The products and solutions text lives in the jurisdiction pack (src/jurisdictions/<iso>/).
+  const data = { products: 'src/jurisdictions', solutions: 'src/jurisdictions' };
+  if (path === '/') return ['src/pages/index.astro', 'src/components/home', 'src/jurisdictions'];
   const [, section, slug] = path.split('/');
   if (data[section] && slug) return [`src/pages/${section}/[slug].astro`, data[section]];
   return [`src/pages${path}.astro`, `src/pages${path}`];

@@ -10,10 +10,11 @@ import Faq from '../components/site/Faq.astro';
 import CtaBand from '../components/site/CtaBand.astro';
 import { homeFaq } from '../data/faq';
 import { faqJsonLd } from '../lib/seo';
+import { content } from '../jurisdictions';
 ---
 <Base
-  title="ePahichan: digital signatures for Nepal"
-  description="Get a digital signature certificate with your citizenship and a selfie, sign PDFs from your phone, or add signing to your application with the ePahichan API."
+  title={content.copy.home.title}
+  description={content.copy.home.description}
   path="/"
   jsonLd={[faqJsonLd(homeFaq)]}
 >

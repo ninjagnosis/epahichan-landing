@@ -106,4 +106,4 @@ HR documents carry personal details: salary, address, citizenship number, someti
 - Keep the signed PDF and its verification result together.
 - Restrict access to signed HR files.
 
-ePahichan lets companies send signing requests and lets employees sign with their own certificate from their phone. If you want to move your HR paperwork to digital signing, [get in touch](/contact).
+%%brand%% lets companies send signing requests and lets employees sign with their own certificate from their phone. If you want to move your HR paperwork to digital signing, [get in touch](/contact).

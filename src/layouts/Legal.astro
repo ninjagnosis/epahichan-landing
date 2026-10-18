@@ -1,9 +1,8 @@
 ---
 import Base from './Base.astro';
-const { frontmatter } = Astro.props;
-const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+const { title, description, path } = Astro.props;
 ---
-<Base title={frontmatter.title} description={frontmatter.description} path={path}>
+<Base title={title} description={description} path={path}>
   <section class="section">
     <div class="wrap">
       <article class="prose legal"><slot /></article>

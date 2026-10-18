@@ -4,6 +4,7 @@ import PostList from '../../../components/blog/PostList.astro';
 import Pager from '../../../components/blog/Pager.astro';
 import { posts, type Post } from '../../../lib/posts';
 import { PAGE_SIZE, pagePath } from '../../../lib/blog';
+import { content } from '../../../jurisdictions';
 
 export async function getStaticPaths() {
   const all = await posts();
@@ -16,7 +17,7 @@ export async function getStaticPaths() {
 }
 const { n, last, items } = Astro.props as { n: number; last: number; items: Post[] };
 ---
-<Base title={`Insights, page ${n}`} description={`Older ePahichan guides on digital signatures, identity and signing documents in Nepal. Page ${n} of ${last}.`} path={pagePath(n)}>
+<Base title={`Insights, page ${n}`} description={content.copy.blog.pageDescription.replace('{n}', String(n)).replace('{last}', String(last))} path={pagePath(n)}>
   <section class="section blog-serif">
     <div class="wrap">
       <h1>Insights, page {n}</h1>

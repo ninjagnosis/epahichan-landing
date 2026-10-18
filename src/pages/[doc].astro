@@ -1,0 +1,22 @@
+---
+// The operator's legal pages (terms, privacy policy, account deletion). The text is the operator's own,
+// read from its profile folder (src/content.config.ts); this site ships none.
+import { getCollection, render } from 'astro:content';
+import Legal from '../layouts/Legal.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('legal');
+  for (const id of ['terms', 'privacy', 'delete-account']) {
+    if (!docs.some((d) => d.id === id)) {
+      throw new Error(`legal/${id === 'terms' ? 'public-terms' : id}.md is missing from the operator profile (TP_OPERATOR_PROFILE/legal/<default locale>/). The site does not publish without it.`);
+    }
+  }
+  return docs.map((entry) => ({ params: { doc: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<Legal title={entry.data.title} description={entry.data.description} path={`/${entry.id}`}>
+  <Content />
+</Legal>

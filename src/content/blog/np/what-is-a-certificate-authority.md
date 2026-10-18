@@ -50,7 +50,7 @@ The root is the anchor of all of it. If the root is compromised, everything bene
 
 That is why roots are guarded carefully. They are kept offline, used rarely and managed under strict procedures with records of every use. It is also why a country sets one up deliberately. A national root gives courts, banks and government offices one place to look when deciding whether a certificate can be relied on.
 
-In Nepal, the digital signature rules are set by the Electronic Transactions Act, 2063. Only a licensed or recognised certifying authority may issue certificates, and the Office of the Controller of Certification oversees them. ePahichan certificates are issued by Nepal Certifying Company (NCC), a licensed certifying authority. See [what a digital signature is worth in Nepal](/blog/what-is-a-digital-signature-nepal) for the legal side.
+In Nepal, the digital signature rules are set by the Electronic Transactions Act, 2063. Only a licensed or recognised certifying authority may issue certificates, and the Office of the Controller of Certification oversees them. %%brand%% certificates are issued by %%ca%% (%%caShort%%), a licensed certifying authority. See [what a digital signature is worth in Nepal](/blog/what-is-a-digital-signature-nepal) for the legal side.
 
 ## What an authority is promising
 

@@ -4,6 +4,8 @@ import SignDemo from '../components/sign-demo/SignDemo.astro';
 import CtaBand from '../components/site/CtaBand.astro';
 import Related from '../components/site/Related.astro';
 import { breadcrumbJsonLd } from '../lib/seo';
+import { SITE_NAME } from '../config/site';
+import { content } from '../jurisdictions';
 ---
 <Base title="How a digital signature works" description="Make and break a digital signature in your browser. See how a private key signs a document, how a public key checks it, and why one changed character is caught." path="/how-signing-works" jsonLd={[breadcrumbJsonLd([{ name: 'How signing works', path: '/how-signing-works' }])]}>
   <section class="section">
@@ -24,7 +26,7 @@ import { breadcrumbJsonLd } from '../lib/seo';
   <section class="section surface">
     <div class="wrap">
       <SignDemo />
-      <p class="note prose">The signatures above are real, and they are made in this browser. They are not ePahichan signatures: the keys are generated fresh each time and are tied to no one, so they say that somebody signed, not that a particular person did. Tying a key to a person is what a certificate does.</p>
+      <p class="note prose">The signatures above are real, and they are made in this browser. They are not {SITE_NAME} signatures: the keys are generated fresh each time and are tied to no one, so they say that somebody signed, not that a particular person did. Tying a key to a person is what a certificate does.</p>
     </div>
   </section>
 
@@ -33,14 +35,14 @@ import { breadcrumbJsonLd } from '../lib/seo';
       <div class="prose">
         <h2>What a signature does not show</h2>
         <p>A signature shows who signed what. It does not show when. The time on a device can be set to anything, so proof of time needs a trusted timestamp, which is a separate record.</p>
-        <h2>What the law says</h2>
-        <p>Section 5 of the Electronic Transactions Act, 2063 gives a digital signature legal validity where the law requires a signature, if the signature is made by the procedures in the Act and the Rules made under it. The Act does not cover every document: deeds that transfer title to land, wills, negotiable instruments and powers of attorney are excluded.</p>
+        <h2>{content.copy.law.heading}</h2>
+        <p>{content.copy.law.paragraph}</p>
         <p>Read more in <a href="/blog">our guides</a> and the <a href="/glossary">glossary</a>.</p>
       </div>
     </div>
   </section>
 
-  <Related groups={[{ h: 'Products', items: [{ href: '/products/app', label: 'ePahichan app' }, { href: '/products/signing-api', label: 'Signing API' }] }, { h: 'Learn', items: [{ href: '/glossary/digital-signature', label: 'What is a digital signature?' }, { href: '/glossary/digital-signature-certificate', label: 'What is a certificate?' }] }]} />
+  <Related groups={[{ h: 'Products', items: [{ href: '/products/app', label: `${SITE_NAME} app` }, { href: '/products/signing-api', label: 'Signing API' }] }, { h: 'Learn', items: [{ href: '/glossary/digital-signature', label: 'What is a digital signature?' }, { href: '/glossary/digital-signature-certificate', label: 'What is a certificate?' }] }]} />
   <CtaBand />
 </Base>
 

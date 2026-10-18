@@ -1,0 +1,208 @@
+#!/usr/bin/env python3
+"""No hand-written source file over 1,000 lines.
+
+    bin/max-lines                  check the repository this script sits in
+    bin/max-lines --root DIR       check another repository (copy this script into it)
+    bin/max-lines --limit N        another limit (default 1000)
+    bin/max-lines --all            list every checked file longer than 500 lines, not only the offenders
+    bin/max-lines --self-test      check the exemption rules and exit
+
+Exit status 0 when every file is within the limit, 1 when one is over, 2 on a usage error.
+
+Docs: docs/architecture/white-label-plan.md, "Phase 3". A file this long has more than one concern;
+split by meaning (handlers, DTOs, queries, tests), never by cutting at the limit. Rust: submodules.
+Dart: separate widget files.
+
+Checked: hand-written `.rs`, `.dart`, `.ts`, `.tsx`, `.astro`, `.py`, `.sh`, `.sql` files (the plan's
+list, plus `.tsx`, which the developer portal's two oversized files are). A line count is
+`len(text.splitlines())`.
+
+Exempt:
+
+  1. generated files: `*.g.dart`, `*.freezed.dart`, `*.gr.dart`, `*.gen.dart`, `schema.d.ts`,
+     the Flutter `gen-l10n` output (`app_localizations*.dart`), and any file whose first lines say
+     it is generated ("GENERATED CODE", "@generated", "Code generated", "DO NOT EDIT");
+  2. applied migration changesets: `migrations/*/changesets/*` (they are checksummed and immutable);
+  3. ARB files (not in the extension list above; Flutter needs one per locale), lock files, the
+     `.sqlx` offline cache, dependency and build directories;
+  4. a glob on a line `max-lines: <glob>` in `<root>/.white-label-allow`, with the reason as a
+     comment on the line above. Use it for a file that cannot be split yet, never as a way out.
+
+The same file as `.white-label-allow` is used on purpose: one list of path exceptions per repository.
+"""
+
+from __future__ import annotations
+
+import fnmatch
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+LIMIT = 1000
+EXTENSIONS = (".rs", ".dart", ".ts", ".tsx", ".astro", ".py", ".sh", ".sql")
+
+SKIP_DIRS = {
+    ".git", "target", "node_modules", ".native", ".dart_tool", "build", "dist", ".sqlx", ".astro",
+    ".idea", ".vscode", "__pycache__", ".pnpm-store", "coverage", ".gradle", "Pods", ".flutter-mirror",
+    "ephemeral", ".symlinks",
+}
+GENERATED_SUFFIXES = (".g.dart", ".freezed.dart", ".gr.dart", ".gen.dart", ".mocks.dart")
+GENERATED_NAMES = {"schema.d.ts"}
+GENERATED_GLOBS = [
+    "*/app_localizations*.dart",
+    "*/l10n/app_localizations*.dart",
+    "*/migrations/*/changesets/*",
+    "migrations/*/changesets/*",
+]
+GENERATED_MARKERS = re.compile(
+    r"GENERATED CODE|@generated|Code generated|DO NOT EDIT|do not edit by hand", re.IGNORECASE
+)
+
+
+def load_exemptions(root: Path) -> list[str]:
+    path = root / ".white-label-allow"
+    globs: list[str] = []
+    if not path.is_file():
+        return globs
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if line.startswith("max-lines:"):
+            globs.append(line.split(":", 1)[1].strip())
+    return globs
+
+
+def list_files(root: Path) -> list[str]:
+    """Tracked and untracked-but-not-ignored files when git is available, else a directory walk."""
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+            check=True,
+            capture_output=True,
+        ).stdout
+        names = [n for n in out.decode("utf-8", "surrogateescape").split("\0") if n]
+        return [n for n in names if (root / n).is_file()]
+    except (OSError, subprocess.CalledProcessError):
+        result: list[str] = []
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+            for name in filenames:
+                result.append(os.path.relpath(os.path.join(dirpath, name), root).replace(os.sep, "/"))
+        return result
+
+
+def is_generated(rel: str, head: str) -> bool:
+    name = rel.rsplit("/", 1)[-1]
+    if name in GENERATED_NAMES or name.endswith(GENERATED_SUFFIXES):
+        return True
+    if any(fnmatch.fnmatchcase(rel, g) for g in GENERATED_GLOBS):
+        return True
+    return bool(GENERATED_MARKERS.search(head))
+
+
+def checked(rel: str) -> bool:
+    parts = rel.split("/")
+    if any(p in SKIP_DIRS for p in parts[:-1]):
+        return False
+    return rel.endswith(EXTENSIONS)
+
+
+def count_lines(path: Path) -> tuple[int, str] | None:
+    try:
+        data = path.read_bytes()
+    except OSError:
+        return None
+    if b"\0" in data[:4096]:
+        return None
+    text = data.decode("utf-8", "replace")
+    head = "\n".join(text.splitlines()[:8])
+    return len(text.splitlines()), head
+
+
+def scan(root: Path, limit: int, floor: int | None = None) -> list[tuple[int, str]]:
+    exempt = load_exemptions(root)
+    rows: list[tuple[int, str]] = []
+    for rel in sorted(list_files(root)):
+        if not checked(rel) or any(fnmatch.fnmatchcase(rel, g) for g in exempt):
+            continue
+        counted = count_lines(root / rel)
+        if counted is None:
+            continue
+        lines, head = counted
+        if is_generated(rel, head):
+            continue
+        if lines > (limit if floor is None else floor):
+            rows.append((lines, rel))
+    rows.sort(key=lambda row: (-row[0], row[1]))
+    return rows
+
+
+def self_test() -> int:
+    cases = [
+        ("lib/a.g.dart", "", True),
+        ("lib/a.freezed.dart", "", True),
+        ("clients/typescript/src/schema.d.ts", "", True),
+        ("lib/l10n/app_localizations_en.dart", "", True),
+        ("migrations/x/changesets/1.sql", "", True),
+        ("backend/migrations/x/changesets/1.sql", "", True),
+        ("src/a.rs", "// Code generated by x. DO NOT EDIT.", True),
+        ("src/a.rs", "//! Hand written.", False),
+        ("src/a.dart", "", False),
+        ("migrations/x/desired/1.sql", "", False),
+    ]
+    bad = [f"{rel}: expected generated={want}" for rel, head, want in cases if is_generated(rel, head) != want]
+    bad += [f"{rel}: expected checked" for rel in ("a/b.rs", "a/b.tsx", "a/b.sql", "a/b.sh") if not checked(rel)]
+    bad += [f"{rel}: expected skipped" for rel in ("node_modules/a/b.ts", "x/a.arb", "x/a.json") if checked(rel)]
+    if bad:
+        sys.stderr.write("max-lines --self-test failed:\n  " + "\n  ".join(bad) + "\n")
+        return 1
+    sys.stdout.write("max-lines: self-test passed\n")
+    return 0
+
+
+def main(argv: list[str]) -> int:
+    root = Path(__file__).resolve().parent.parent
+    limit = LIMIT
+    show_all = False
+    args = list(argv)
+    while args:
+        arg = args.pop(0)
+        if arg == "--root" and args:
+            root = Path(args.pop(0)).resolve()
+        elif arg == "--limit" and args:
+            try:
+                limit = int(args.pop(0))
+            except ValueError:
+                sys.stderr.write("max-lines: --limit takes a number\n")
+                return 2
+        elif arg == "--all":
+            show_all = True
+        elif arg == "--self-test":
+            return self_test()
+        elif arg in {"-h", "--help"}:
+            sys.stdout.write((__doc__ or "").lstrip())
+            return 0
+        else:
+            sys.stderr.write(f"max-lines: unknown argument {arg!r}\n")
+            return 2
+    if not root.is_dir():
+        sys.stderr.write(f"max-lines: not a directory: {root}\n")
+        return 2
+
+    if show_all:
+        for lines, rel in scan(root, limit, floor=limit // 2):
+            sys.stdout.write(f"{lines:6d}  {rel}{'  (over)' if lines > limit else ''}\n")
+    over = scan(root, limit)
+    if not over:
+        sys.stdout.write(f"max-lines: clean, no hand-written file over {limit} lines ({root})\n")
+        return 0
+    if not show_all:
+        for lines, rel in over:
+            sys.stdout.write(f"{lines:6d}  {rel}\n")
+    sys.stdout.write(f"max-lines: {len(over)} file(s) over {limit} lines in {root}\n")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

@@ -1,0 +1,20 @@
+# Paths where the white-label guard (bin/white-label-guard) does not report customer, country or
+# provider terms, beyond its built-in list (operators/radiant, jurisdictions/np, applied migrations,
+# the desired schema, provider adapters, white-label-staging, src/jurisdictions/np, src/content/blog/np).
+# One glob per line (fnmatch on the repository-relative path). Other lines: `repo-names: <glob>`,
+# `mask: <regex>`, `max-lines: <glob>` (see the script's --help).
+#
+# Only files whose job is to name the terms belong here. The reason is on the lines above each entry.
+
+# A hand-written brand document for the fictional Example operator. It runs on the np pack, so pack
+# words (OCC, NPR, Bikram Sambat, +977) appear in it by design.
+fixtures/*
+
+# The first customer's live Worker identity ("wrangler deploy --name" gives another operator its own).
+wrangler.jsonc
+
+# The first customer's brand and design records; not shipped, not part of the build.
+BRAND.md
+DESIGN.md
+PRODUCT-DESIGN.md
+docs/landing-content-v1.md

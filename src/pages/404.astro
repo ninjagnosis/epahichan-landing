@@ -1,8 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import { products } from '../data/products';
+import { content } from '../jurisdictions';
 ---
-<Base title="Page not found" description="This page does not exist on epahichan.com. Try the home page, the products or the insights, or call us on 01-5922361." path="/404" noindex>
+<Base title="Page not found" description={content.copy.notFound.description} path="/404" noindex>
   <section class="section">
     <div class="wrap">
       <h1>We could not find that page</h1>

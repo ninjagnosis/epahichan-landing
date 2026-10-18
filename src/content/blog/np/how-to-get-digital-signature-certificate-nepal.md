@@ -5,13 +5,13 @@ date: 2026-10-14
 tags: [digital-signature, guides]
 faq:
   - q: "Who issues digital signature certificates in Nepal?"
-    a: "Only a certifying authority licensed or recognised under the Electronic Transactions Act, 2063. The Office of the Controller of Certification licenses and oversees them. ePahichan certificates are issued by Nepal Certifying Company (NCC)."
+    a: "Only a certifying authority licensed or recognised under the Electronic Transactions Act, 2063. The Office of the Controller of Certification licenses and oversees them. %%brand%% certificates are issued by %%ca%% (%%caShort%%)."
   - q: "What documents do I need to get a digital signature certificate?"
-    a: "For a person, a valid identity document such as a citizenship certificate or passport, a working mobile number and email, and a way to prove you are the person on the document. In the ePahichan app that proof is a selfie checked against the document. An organisation certificate also needs papers that show the organisation exists and that you are allowed to sign for it."
+    a: "For a person, a valid identity document such as a citizenship certificate or passport, a working mobile number and email, and a way to prove you are the person on the document. In the %%brand%% app that proof is a selfie checked against the document. An organisation certificate also needs papers that show the organisation exists and that you are allowed to sign for it."
   - q: "How long does it take to get a digital signature certificate?"
     a: "Most of the time is spent on identity checks, and most delays come from documents that do not match. If your name, date of birth and photo are clear and consistent, the process is short. If they are not, it waits until they are."
   - q: "Can I get a digital signature certificate without visiting an office?"
-    a: "It depends on the route. Traditional certificates on a USB token often involve handing over documents in person. The ePahichan app is built so you can apply from your phone with your citizenship document and a selfie."
+    a: "It depends on the route. Traditional certificates on a USB token often involve handing over documents in person. The %%brand%% app is built so you can apply from your phone with your citizenship document and a selfie."
   - q: "What happens when my certificate expires?"
     a: "You can no longer make new signatures with it and you need a new certificate. Documents you signed while it was valid do not become invalid just because it later expired."
   - q: "Can someone else apply for a certificate in my name?"
@@ -22,7 +22,7 @@ People usually go looking for a digital signature certificate in a hurry. A bank
 
 So the first question is almost always the same: how do I get one, and how long will it take?
 
-This guide answers that as plainly as we can. It explains who is allowed to issue a certificate in Nepal, what you should prepare before you start, what the identity check is actually looking for, where your signing key ends up living, and the small mistakes that turn a short job into a week of back and forth. It does not try to sell you a particular route. Near the end we explain how the ePahichan app does it, so you can compare.
+This guide answers that as plainly as we can. It explains who is allowed to issue a certificate in Nepal, what you should prepare before you start, what the identity check is actually looking for, where your signing key ends up living, and the small mistakes that turn a short job into a week of back and forth. It does not try to sell you a particular route. Near the end we explain how the %%brand%% app does it, so you can compare.
 
 If you are not yet sure what a digital signature is or what it is worth in law, start with [what a digital signature is, and what it is worth in Nepal](/blog/what-is-a-digital-signature-nepal). This post assumes you already know you need one.
 
@@ -48,7 +48,7 @@ This matters for one practical reason. A certificate only carries the weight the
 
 So before you pay anyone, ask one question: which licensed certifying authority issues this certificate? A provider that cannot answer clearly is a provider to walk away from.
 
-ePahichan certificates are issued by Nepal Certifying Company (NCC), a licensed certifying authority. ePahichan is the app you use to apply and sign. The authority is the one that checks you and issues the certificate.
+%%brand%% certificates are issued by %%ca%% (%%caShort%%), a licensed certifying authority. %%brand%% is the app you use to apply and sign. The authority is the one that checks you and issues the certificate.
 
 ## Individual or organisation: decide before you start
 
@@ -73,7 +73,7 @@ You will need:
 - **A valid identity document.** In Nepal this is most often the citizenship certificate. A passport is the other common choice. Check that it is the one you will keep using, because the name on your certificate will follow it.
 - **A mobile number you control and will keep.** It is used to reach you and, in most modern flows, to confirm it is you at the start. A number registered in someone else's name, or one you are about to give up, causes trouble later.
 - **An email address you actually read.** Notices about your certificate, including expiry, are sent there.
-- **A way to prove you are the person on the document.** Traditionally this was done by appearing in person. In the ePahichan app it is a selfie that is compared with the photo on your document.
+- **A way to prove you are the person on the document.** Traditionally this was done by appearing in person. In the %%brand%% app it is a selfie that is compared with the photo on your document.
 
 ### For an organisation
 
@@ -133,7 +133,7 @@ There are three common places a signing key can live, and the choice matters mor
 
 **In a file on a computer.** Some certificates are delivered as a file protected by a password. This is convenient and much weaker. Files can be copied without anyone noticing, and a copied key is a stolen identity. If you are offered this form, ask whether a hardware-backed option is available.
 
-**In your phone's secure hardware.** Modern phones contain a protected chip area designed to keep keys from ever being exported. A key created there stays on that phone, and signing is unlocked with your fingerprint or face. This is how the ePahichan app works. Your signing key is created on your phone, kept in its secure hardware, and never leaves it. ePahichan cannot read it.
+**In your phone's secure hardware.** Modern phones contain a protected chip area designed to keep keys from ever being exported. A key created there stays on that phone, and signing is unlocked with your fingerprint or face. This is how the %%brand%% app works. Your signing key is created on your phone, kept in its secure hardware, and never leaves it. %%brand%% cannot read it.
 
 Whichever you choose, the question to ask is the same: can this key be copied without me knowing? If the answer is yes, treat it as you would a signed blank cheque.
 
@@ -147,7 +147,7 @@ Prices for certificates vary by authority, by class, by validity period and by w
 - If my phone or token is lost, what does replacement cost and how long does it take?
 - Is there any charge to verify or to sign, or only for the certificate?
 
-In the ePahichan app, the fee is shown before you pay, and you pay through Fonepay or a bank or wallet app.
+In the %%brand%% app, the fee is shown before you pay, and you pay through %%paymentThrough%%.
 
 ## How long it takes, and why it sometimes takes longer
 
@@ -183,19 +183,19 @@ Once your certificate is issued, a few small habits will save you trouble later.
 
 **Your name changes, or you leave the organisation you signed for.** Your certificate no longer describes you accurately. Ask for it to be revoked and get one that does.
 
-## How it works in the ePahichan app
+## How it works in the %%brand%% app
 
-If you want to compare routes, here is what applying looks like with ePahichan, start to finish:
+If you want to compare routes, here is what applying looks like with %%brand%%, start to finish:
 
 1. **Install the app** and sign up with your mobile number.
 2. **Photograph your citizenship document** and take a selfie. The certifying authority checks that you are the person on the document.
 3. **Your signing key is created on your phone,** inside its secure hardware. It never leaves the phone.
-4. **Pay the fee** through Fonepay, or a bank or wallet app.
+4. **Pay the fee** through %%paymentMethods%%.
 5. **Once the certificate is issued, sign.** Open a PDF, or photograph a paper page, and sign with your fingerprint or face. You can also send a document to other people and see who has signed.
 
 There is no token to carry and no driver to install, and the key cannot be passed around an office because it is tied to your phone and your fingerprint.
 
-If you would rather see the mechanics before you apply, you can [make and break a signature in your browser](/how-signing-works). When you are ready, [the ePahichan app](/products/app) is where you start.
+If you would rather see the mechanics before you apply, you can [make and break a signature in your browser](/how-signing-works). When you are ready, [the %%brand%% app](/products/app) is where you start.
 
 ## A short checklist
 

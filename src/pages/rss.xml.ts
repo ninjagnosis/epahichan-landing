@@ -2,13 +2,15 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
 import { published } from '../lib/blog';
+import { LOCALES, SITE_NAME } from '../config/site';
+import { content } from '../jurisdictions';
 
 // Drafts never reach the feed, even on the dev server.
 export async function GET(context: APIContext) {
   const items = published(await getCollection('blog'));
   return rss({
-    title: 'ePahichan insights',
-    description: 'Guides on digital signatures, identity and signing documents in Nepal.',
+    title: `${SITE_NAME} insights`,
+    description: content.copy.rss.description,
     site: context.site!,
     items: items.map((p) => ({
       title: p.data.title,
@@ -17,6 +19,6 @@ export async function GET(context: APIContext) {
       link: `/blog/${p.id}`,
       categories: p.data.tags,
     })),
-    customData: '<language>en</language>',
+    customData: `<language>${LOCALES.default}</language>`,
   });
 }

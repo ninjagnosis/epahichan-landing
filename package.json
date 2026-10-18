@@ -1,13 +1,16 @@
 {
-  "name": "epahichan-public-landing",
+  "name": "public-landing",
   "packageManager": "pnpm@10.11.1",
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node scripts/stage-brand.mjs",
     "dev": "astro dev",
+    "prebuild": "node scripts/stage-brand.mjs",
     "build": "astro build && node scripts/sitemap.mjs dist",
     "preview": "astro preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "guard": "python3 bin/white-label-guard"
   },
   "dependencies": {
     "@astrojs/rss": "^4",

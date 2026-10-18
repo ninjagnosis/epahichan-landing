@@ -41,8 +41,13 @@ export function pageWindow(current: number, last: number, around = 1): (number |
   return out;
 }
 
-export const tagLabel = (tag: string) =>
-  tag.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()).replace(/\b(api|kyc|nin|pki|otp)\b/gi, (w) => w.toUpperCase());
+/** Words written in capitals in a tag label. A jurisdiction pack adds its own (`copy.tagAcronyms`). */
+const ACRONYMS = ['api', 'kyc', 'pki', 'otp'];
+
+export const tagLabel = (tag: string, acronyms: string[] = []) => {
+  const caps = new RegExp(`\\b(${[...ACRONYMS, ...acronyms].join('|')})\\b`, 'gi');
+  return tag.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()).replace(caps, (w) => w.toUpperCase());
+};
 
 /** Posts sharing the most tags with `post`, excluding itself. */
 export function related<T extends PostLike>(posts: T[], post: T, n = 3): T[] {

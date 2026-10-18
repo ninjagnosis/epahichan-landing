@@ -2,15 +2,15 @@
 import Scale from '@lucide/astro/icons/scale';
 import BadgeCheck from '@lucide/astro/icons/badge-check';
 import FileLock from '@lucide/astro/icons/file-lock';
-const points = [
-  { Icon: Scale, h: 'Recognised by Nepali law', p: 'Section 5 of the Electronic Transactions Act, 2063 gives a digital signature legal validity where a signature is required, if it is made by the procedures in the Act and its Rules.' },
-  { Icon: BadgeCheck, h: 'Certificates from NCC', p: 'Each signature carries the signer’s own certificate, issued by Nepal Certifying Company, the licensed certifying authority.' },
-  { Icon: FileLock, h: 'Changes show', p: 'Change one character of a signed PDF and the signature stops matching. Anyone can check, without asking us.' },
-];
+import { content } from '../../jurisdictions';
+
+const { trust } = content.copy;
+const icons = { scale: Scale, 'badge-check': BadgeCheck, 'file-lock': FileLock };
+const points = trust.points.map((p) => ({ Icon: icons[p.icon], h: p.h, p: p.p }));
 ---
 <section class="section trust surface" data-reveal>
   <div class="wrap">
-    <h2>Why a signature holds up</h2>
+    <h2>{trust.heading}</h2>
     <ul class="points" data-stagger>
       {points.map(({ Icon, h, p }, i) => (
         <li style={`--i:${i}`}>
@@ -20,7 +20,7 @@ const points = [
         </li>
       ))}
     </ul>
-    <p class="note muted">Some documents are outside the Act, including deeds that transfer title to land, wills and negotiable instruments. A digital signature does not change that.</p>
+    <p class="note muted">{trust.note}</p>
   </div>
 </section>
 

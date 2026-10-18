@@ -1,0 +1,31 @@
+# Checks that run on every push. The site itself is built and deployed by Cloudflare Workers Builds
+# (wrangler.jsonc), which has no pipeline file; this one only gates the repository.
+#
+# Runner: the shared shell executor `build-v2`. A shell executor ignores `image:`, so there is none.
+stages:
+  - check
+
+# No customer, country or provider name outside the allowed paths (.white-label-allow). The script is a copy of
+# trust-platform's bin/white-label-guard.
+white-label-guard:
+  stage: check
+  tags:
+    - build-v2
+  interruptible: true
+  script:
+    - set -euo pipefail
+    - python3 bin/white-label-guard
+  rules:
+    - if: '$CI_COMMIT_BRANCH || $CI_COMMIT_TAG'
+
+# No hand-written source file over 1,000 lines (copy of trust-platform's bin/max-lines).
+max-lines:
+  stage: check
+  tags:
+    - build-v2
+  interruptible: true
+  script:
+    - set -euo pipefail
+    - python3 bin/max-lines
+  rules:
+    - if: '$CI_COMMIT_BRANCH || $CI_COMMIT_TAG'

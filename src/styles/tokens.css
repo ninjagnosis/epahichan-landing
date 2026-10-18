@@ -1,4 +1,5 @@
-/* ePahichan tokens. Every value here is listed in DESIGN.md; nothing outside it. */
+/* Site tokens. The brand's colour ramp (--ramp-lift, --ramp-base, --ramp-ink, --ramp-deep) comes from the brand
+   document (brand-colours.css, written by scripts/stage-brand.mjs); everything else is listed in DESIGN.md. */
 :root {
   --canvas: #FFFFFF;
   --surface: #F6F7F9;
@@ -6,17 +7,17 @@
   --line: #DEE1E6;
   --ink: #14171C;
   --ink-muted: #495058;
-  --brand: #B30712;
-  --brand-hover: #6F0006;
+  --brand: var(--ramp-ink);
+  --brand-hover: var(--ramp-deep);
   --on-brand: #FFFFFF;
-  --brand-ink: #B30712;
-  --link: #B30712;
-  --accent: #E31B23;
+  --brand-ink: var(--ramp-ink);
+  --link: var(--ramp-ink);
+  --accent: var(--ramp-base);
   --on-accent: #FFFFFF;
-  --stage: #6F0006;
+  --stage: var(--ramp-deep);
   --stage-ink: #FFFFFF;
-  --stage-muted: #F2C9CB;
-  --stage-line: #93353B;
+  --stage-muted: var(--tint-stage-muted);
+  --stage-line: var(--tint-stage-line);
   --ok: #1B6B3A;
   --bad: #B3261E;
   --error: #B3261E;

@@ -1,0 +1,420 @@
+#!/usr/bin/env python3
+"""White-label guard: no customer brand, country rule or provider name outside the allowed paths.
+
+    bin/white-label-guard                  scan the repository this script sits in
+    bin/white-label-guard --root DIR       scan another repository (copy this script into it)
+    bin/white-label-guard --scan DIR       scan DIR as built output (a web bundle, extracted strings,
+                                           saved HTTP responses): no allowlist, no markers, every
+                                           match counts
+    bin/white-label-guard --scan DIR --deploy-tree
+                                           the same for a rendered deploy tree (`xtask render-deploy`),
+                                           where the names of the sibling repositories and the schema
+                                           that applied migrations create are internal and not findings
+    bin/white-label-guard --summary        counts per top-level path instead of every line
+    bin/white-label-guard --list-terms     print the term list and exit
+    bin/white-label-guard --self-test      check the matching rule against known words and exit
+
+Exit status 0 when clean, 1 when there are findings, 2 on a usage error.
+
+Docs: docs/architecture/white-label-plan.md, "Guard script". The terms are the plan's list. Matching
+is whole-word, because the plan's raw substrings (`npr`, `occ`) hit ordinary words such as
+"unprivileged", "occurred", "unprocessable" and identifiers such as `DynProfileRepository`. The rule
+is the regular expression `(?<![A-Za-z])TERM(?![a-z])` with two refinements, written out in code
+(`find_terms`) and held by `--self-test`:
+
+  * a letter before the term means it is inside a longer word: no match. Digits, `_`, `-`, `.`, `/`
+    and `:` before it are word edges (`app_epahichan`, `ncc-cms`, `x.ncc.app`), unlike the regex word boundary, which
+    treats `_` as part of a word and would miss `NCC_PORTAL`;
+  * a lowercase letter after the term means a longer word (`occurs`, `nccx`): no match. An
+    uppercase letter after it is a camelCase edge (`nccPublicChannel`, `ePahichanBackend`) and
+    matches, unless the term is written in capitals itself, which is an all-caps run (`OCCUPY`,
+    `NCCPUBLIC`) and does not;
+  * `NCC_PORTAL`, `ncc-cms`, `ncc.app`, `app_epahichan`, `+977` and `ePahichan` all match;
+    `unprivileged`, `occurs`, `occurred`, `unprocessable`, `DynProfileRepository`, `Uncle` do not.
+
+Allowed (a finding there is not reported):
+
+  1. paths in ALLOWED_PATHS below, and one glob per line from `<root>/.white-label-allow`
+     (`#` starts a comment). This is also how Markdown, ARB and JSON files, which cannot carry a
+     marker, are allowed: by path. Other line kinds in the file:
+       `repo-names: <glob>`   adds a REPO_NAME_PATHS entry (rule 3)
+       `mask: <regex>`        text matching the regular expression is removed from every line before
+                              the terms are looked for (the Dart `package:` names of a repository
+                              that keeps its package name, say). Applies to the whole repository
+       `max-lines: <glob>`    read by bin/max-lines, ignored here;
+  2. a line that carries the marker `white-label: allow <reason>` in any comment style
+     (`// white-label: allow ...`, `# white-label: allow ...`, `-- white-label: allow ...`).
+     The reason is mandatory;
+  3. in REPO_NAME_PATHS only: the names of the eight sibling repositories. Repository names are
+     internal (plan, "Not in scope now": no repo renames), so deploy scripts and CI files that
+     must name a repository to pick it out do not trip the guard. A repository name in code
+     (`epahichan-app` as an OAuth client id, say) is still a finding, because those paths are not
+     in REPO_NAME_PATHS.
+
+Never scanned: version control, build output, dependency trees, lock files, generated code
+(`*.g.dart`, `*.freezed.dart`, `schema.d.ts`) and binary files.
+"""
+
+from __future__ import annotations
+
+import fnmatch
+import os
+import re
+import subprocess
+import sys
+from collections import Counter
+from pathlib import Path
+
+# The plan's term list, plus the spellings it implies. Matching rules are in the module docstring.
+TERMS = [
+    "ncc",
+    "epahichan",
+    "e-pahichan",
+    "radiant",
+    "radiantca",
+    "radiantinfotech",
+    "nepal",
+    "nepali",
+    "nepalese",
+    "kathmandu",
+    "npr",
+    "citizenship",
+    "bikram",
+    "occ",
+    "aakash",
+    "fonepay",
+    "khalti",
+    "esewa",
+    "techworkcompany",
+]
+# `+977` is not a word; it is matched literally.
+LITERAL_TERMS = ["+977"]
+
+# Paths (fnmatch globs against the repository-relative path, `/` separated) where the terms are
+# expected: the Radiant profile, the Nepal pack, applied migrations, provider adapter modules and
+# the one handoff document the plan names.
+ALLOWED_PATHS = [
+    "operators/radiant/*",
+    "jurisdictions/np/*",
+    "migrations/*/changesets/*",
+    "*/sms/aakash.rs",
+    "*/sms/aakash/*",
+    "*/fonepay*/*",
+    "*/fonepay*.rs",
+    "docs/operations/handoff.md",
+    # Applied migrations are immutable (plan, edge case 3); the desired schema and the Atlas files
+    # next to them mirror the applied state and name the same things.
+    "*/migrations/*/changesets/*",
+    "migrations/*/desired/*",
+    "*/migrations/*/desired/*",
+    "migrations/atlas.hcl",
+    "*/migrations/atlas.hcl",
+    "migrations/atlas.sum",
+    "*/migrations/atlas.sum",
+    # Files waiting to move into an operator profile (they are that operator's own).
+    "white-label-staging/*",
+    "*/white-label-staging/*",
+    # A jurisdiction pack's own content in the web repositories: the Nepal pages and posts.
+    "*/jurisdictions/np/*",
+    "*/content/blog/np/*",
+    # The guard names the terms it looks for.
+    "bin/white-label-guard",
+    ".white-label-allow",
+]
+
+# Paths where the names of sibling repositories are not findings (rule 3 in the docstring).
+REPO_NAME_PATHS = [
+    "deploy/*",
+    "bin/*",
+    "process-compose*.yaml",
+    ".gitlab-ci.yml",
+    ".github/*",
+]
+REPO_NAMES = [
+    "ncc-cms",
+    "ncc-operator-console",
+    "epahichan-app",
+    "epahichan-developers",
+    "epahichan-sdks",
+    "epahichan-public-landing",
+]
+
+SKIP_DIRS = {
+    ".git", "target", "node_modules", ".native", ".dart_tool", "build", "dist", ".sqlx",
+    ".idea", ".vscode", "__pycache__", ".pnpm-store", "coverage", ".gradle", "Pods",
+}
+SKIP_FILES = {
+    "Cargo.lock", "pnpm-lock.yaml", "package-lock.json", "yarn.lock", "pubspec.lock", "schema.d.ts",
+}
+SKIP_SUFFIXES = (
+    ".g.dart", ".freezed.dart", ".png", ".jpg", ".jpeg", ".gif", ".ico", ".webp", ".pdf", ".woff",
+    ".woff2", ".ttf", ".otf", ".wasm", ".gz", ".zip", ".jks", ".keystore", ".p12", ".pfx", ".der",
+    ".pyc", ".svgz", ".mp4", ".mov",
+)
+
+MARKER = re.compile(r"white-label:\s*allow\s+\S")
+
+
+def _term_pattern(term: str) -> re.Pattern[str]:
+    body = re.escape(term)
+    # Not preceded by a letter. Followed by a non-lowercase character, or by an uppercase letter
+    # when the matched text is lowercase (camelCase). The second branch is checked in code.
+    return re.compile(r"(?<![A-Za-z])" + body + r"(?=(.?))", re.IGNORECASE)
+
+
+_PATTERNS = [(t, _term_pattern(t)) for t in TERMS]
+# In a rendered deploy tree the channel BFF's Postgres schema is spelled out. It is created by an applied
+# migration, is the same for every operator and is never shown to a user (plan, edge case 3).
+_INTERNAL_SCHEMA_RE = re.compile(
+    r"(?i)(\bsearch_path\s*=\s*ncc\b|\bSCHEMA(\s+IF\s+NOT\s+EXISTS)?\s+ncc\b)"
+)
+_REPO_NAME_RE = re.compile(
+    r"(?<![A-Za-z0-9_])(" + "|".join(re.escape(n) for n in REPO_NAMES) + r")(?![A-Za-z0-9_])"
+)
+
+
+def find_terms(line: str) -> list[str]:
+    """The terms found in one line, as written in the line."""
+    found: list[str] = []
+    for term, pattern in _PATTERNS:
+        for m in pattern.finditer(line):
+            following = m.group(1)
+            matched = line[m.start() : m.end()]
+            if following.isalpha():
+                if following.islower():
+                    continue  # a longer word: `nccx`, `occurs`
+                if matched.isupper():
+                    continue  # an all-caps run: `OCCUPY`, `NCCPUBLIC`
+                # lowercase or mixed term, uppercase letter after: camelCase, `nccPublic`, `ePahichanBackend`
+            found.append(matched)
+    for term in LITERAL_TERMS:
+        if term in line:
+            found.append(term)
+    return found
+
+
+def mask_repo_names(line: str) -> str:
+    return _REPO_NAME_RE.sub(lambda m: "_" * len(m.group(0)), line)
+
+
+def load_extra_globs(root: Path) -> tuple[list[str], list[str], list[re.Pattern[str]]]:
+    allow: list[str] = []
+    repo_names: list[str] = []
+    masks: list[re.Pattern[str]] = []
+    path = root / ".white-label-allow"
+    if not path.is_file():
+        return allow, repo_names, masks
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if raw.lstrip().startswith("mask:"):
+            # A regular expression may hold a `#`; only a whole-line comment is dropped.
+            pattern = raw.split(":", 1)[1].strip()
+            if pattern:
+                masks.append(re.compile(pattern))
+            continue
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        if line.startswith("repo-names:"):
+            repo_names.append(line.split(":", 1)[1].strip())
+        elif line.startswith("max-lines:"):
+            continue
+        else:
+            allow.append(line)
+    return allow, repo_names, masks
+
+
+def matches_any(rel: str, globs: list[str]) -> bool:
+    return any(fnmatch.fnmatchcase(rel, g) for g in globs)
+
+
+def list_files(root: Path) -> list[str]:
+    """Tracked and untracked-but-not-ignored files when git is available, else a directory walk."""
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+            check=True,
+            capture_output=True,
+        ).stdout
+        names = [n for n in out.decode("utf-8", "surrogateescape").split("\0") if n]
+        return [n for n in names if (root / n).is_file()]
+    except (OSError, subprocess.CalledProcessError):
+        return walk(root)
+
+
+def walk(root: Path) -> list[str]:
+    result: list[str] = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        for name in filenames:
+            result.append(os.path.relpath(os.path.join(dirpath, name), root).replace(os.sep, "/"))
+    return result
+
+
+def skipped(rel: str) -> bool:
+    parts = rel.split("/")
+    if any(p in SKIP_DIRS for p in parts[:-1]):
+        return True
+    name = parts[-1]
+    return name in SKIP_FILES or name.endswith(SKIP_SUFFIXES)
+
+
+def read_text(path: Path) -> str | None:
+    try:
+        data = path.read_bytes()
+    except OSError:
+        return None
+    if b"\0" in data[:4096]:
+        return None
+    try:
+        return data.decode("utf-8")
+    except UnicodeDecodeError:
+        return None
+
+
+def scan_repository(root: Path) -> list[tuple[str, int, str, list[str]]]:
+    extra_allow, extra_repo_names, masks = load_extra_globs(root)
+    allowed = ALLOWED_PATHS + extra_allow
+    repo_name_paths = REPO_NAME_PATHS + extra_repo_names
+    findings: list[tuple[str, int, str, list[str]]] = []
+    for rel in sorted(list_files(root)):
+        if skipped(rel) or matches_any(rel, allowed):
+            continue
+        text = read_text(root / rel)
+        if text is None:
+            continue
+        mask = matches_any(rel, repo_name_paths)
+        for number, line in enumerate(text.splitlines(), start=1):
+            if MARKER.search(line):
+                continue
+            probe = mask_repo_names(line) if mask else line
+            for pattern in masks:
+                probe = pattern.sub(lambda m: "_" * len(m.group(0)), probe)
+            hits = find_terms(probe)
+            if hits:
+                findings.append((rel, number, line.strip(), hits))
+        # A path is part of what a person sees in a built bundle, so a brand in a file name counts.
+        path_hits = find_terms(mask_repo_names(rel) if mask else rel)
+        if path_hits:
+            findings.append((rel, 0, "(file name)", path_hits))
+    return findings
+
+
+def scan_output(directory: Path, deploy_tree: bool = False) -> list[tuple[str, int, str, list[str]]]:
+    """Built output: no allowlist, no markers. A rendered deploy tree may also name the sibling
+    repositories and the migration-created schema."""
+    findings: list[tuple[str, int, str, list[str]]] = []
+
+    def clean(line: str) -> str:
+        if not deploy_tree:
+            return line
+        return _INTERNAL_SCHEMA_RE.sub(lambda m: "_" * len(m.group(0)), mask_repo_names(line))
+
+    for rel in sorted(walk(directory)):
+        text = read_text(directory / rel)
+        path_hits = find_terms(clean(rel))
+        if path_hits:
+            findings.append((rel, 0, "(file name)", path_hits))
+        if text is None:
+            # Binary file: search its printable strings, the way `strings` would.
+            try:
+                data = (directory / rel).read_bytes()
+            except OSError:
+                continue
+            for number, run in enumerate(re.findall(rb"[\x20-\x7e]{6,}", data), start=1):
+                hits = find_terms(clean(run.decode("ascii")))
+                if hits:
+                    findings.append((rel, number, run.decode("ascii")[:200], hits))
+            continue
+        for number, line in enumerate(text.splitlines(), start=1):
+            hits = find_terms(clean(line))
+            if hits:
+                findings.append((rel, number, line.strip()[:200], hits))
+    return findings
+
+
+SELF_TEST_MATCHES = [
+    "NCC_PORTAL_ORIGIN", "ncc-cms", "ncc.app", "app_nccPublicChannel0001", "ePahichan-Signature",
+    "epahichanBackend", "x.epahichan.com", "Radiant InfoTech", "radiantca.com.np", "+977 98",
+    "the Nepal Telecom", "nepali", "Kathmandu", "NPR 100", "an OCC rule", "Aakash", "fonepay_v2",
+    "citizenship_document", "bikram_sambat", "dev.techworkcompany.com", "KHALTI", "eSewa",
+]
+SELF_TEST_CLEAN = [
+    "unprivileged", "occurs", "occurred", "occupy", "OCCUPY", "unprocessable", "unproved",
+    "DynProfileRepository", "InclusionProof", "Uncle", "nccx", "NCCPUBLIC", "accrual", "success",
+    "Concourse", "tuncc", "inclusion", "exception", "preoccupied", "npresent",
+]
+
+
+def self_test() -> int:
+    failures = [t for t in SELF_TEST_MATCHES if not find_terms(t)]
+    failures += [f"(false positive) {t}" for t in SELF_TEST_CLEAN if find_terms(t)]
+    if failures:
+        sys.stderr.write("white-label-guard --self-test failed:\n  " + "\n  ".join(failures) + "\n")
+        return 1
+    sys.stdout.write(
+        f"white-label-guard: self-test passed ({len(SELF_TEST_MATCHES)} matches, {len(SELF_TEST_CLEAN)} clean)\n"
+    )
+    return 0
+
+
+def main(argv: list[str]) -> int:
+    root = Path(__file__).resolve().parent.parent
+    scan_dir: Path | None = None
+    summary = False
+    deploy_tree = False
+    args = list(argv)
+    while args:
+        arg = args.pop(0)
+        if arg == "--root" and args:
+            root = Path(args.pop(0)).resolve()
+        elif arg == "--scan" and args:
+            scan_dir = Path(args.pop(0)).resolve()
+        elif arg == "--deploy-tree":
+            deploy_tree = True
+        elif arg == "--summary":
+            summary = True
+        elif arg == "--self-test":
+            return self_test()
+        elif arg == "--list-terms":
+            sys.stdout.write("\n".join(TERMS + LITERAL_TERMS) + "\n")
+            return 0
+        elif arg in {"-h", "--help"}:
+            sys.stdout.write((__doc__ or "").lstrip())
+            return 0
+        else:
+            sys.stderr.write(f"white-label-guard: unknown argument {arg!r}\n")
+            return 2
+
+    if scan_dir is not None:
+        if not scan_dir.is_dir():
+            sys.stderr.write(f"white-label-guard: not a directory: {scan_dir}\n")
+            return 2
+        findings = scan_output(scan_dir, deploy_tree)
+        scope = f"built output {scan_dir}"
+    else:
+        if not root.is_dir():
+            sys.stderr.write(f"white-label-guard: not a directory: {root}\n")
+            return 2
+        findings = scan_repository(root)
+        scope = f"repository {root}"
+
+    if not findings:
+        sys.stdout.write(f"white-label-guard: clean ({scope})\n")
+        return 0
+
+    if summary:
+        counts: Counter[str] = Counter()
+        for rel, _, _, _ in findings:
+            counts["/".join(rel.split("/")[:2])] += 1
+        for key, number in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])):
+            sys.stdout.write(f"{number:6d}  {key}\n")
+    else:
+        for rel, number, text, hits in findings:
+            where = f"{rel}:{number}" if number else rel
+            sys.stdout.write(f"{where}: [{', '.join(sorted(set(h.lower() for h in hits)))}] {text[:160]}\n")
+    sys.stdout.write(f"white-label-guard: {len(findings)} finding(s) in {scope}\n")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

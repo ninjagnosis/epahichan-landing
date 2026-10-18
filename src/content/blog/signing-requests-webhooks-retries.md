@@ -20,10 +20,10 @@ If your product has a moment where a customer must agree to a document, such as 
 2. **The signer signs.** The service reaches the signer, for example by a code on their phone, and collects the signature.
 3. **You are told.** The service sends your server a webhook. You fetch the signed PDF and store it with the record.
 
-In ePahichan's Signing API the first step is one call:
+In %%brand%%'s Signing API the first step is one call:
 
 ```js
-await epahichan.signingRequests.create({
+await %%sdkClient%%.signingRequests.create({
   signer: { name: 'Sita Sharma', phone, kyc },
   documents: [
     Documents.certificateApplication(),
@@ -48,7 +48,7 @@ A webhook is an HTTP request your server receives. Three rules keep it safe.
 
 Networks fail. Your server sends a request and the connection drops. Did the service receive it? You cannot know, so you retry. Without protection a retry creates a second signing request, and the customer gets asked twice.
 
-The fix is an **idempotency key**: a unique value you send with the request. If the service sees the same key again, it returns the original request instead of creating a new one. In ePahichan's API, requests are safe to repeat in this way.
+The fix is an **idempotency key**: a unique value you send with the request. If the service sees the same key again, it returns the original request instead of creating a new one. In %%brand%%'s API, requests are safe to repeat in this way.
 
 ## Test before you go live
 

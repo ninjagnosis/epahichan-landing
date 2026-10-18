@@ -11,6 +11,7 @@ import { productsForTags, solutionsForTags } from '../../data/links';
 import { coverFor, fmtDate, posts, type Post } from '../../lib/posts';
 import { related } from '../../lib/blog';
 import { articleJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../lib/seo';
+import { textDeep } from '../../brand';
 
 export async function getStaticPaths() {
   const all = await posts();
@@ -18,7 +19,8 @@ export async function getStaticPaths() {
 }
 const { post, all } = Astro.props as { post: Post; all: Post[] };
 const { Content } = await render(post);
-const d = post.data;
+// Front matter is not run through the Markdown pipeline, so its %%tokens%% are filled here.
+const d = { ...post.data, faq: textDeep(post.data.faq) };
 const path = `/blog/${post.id}`;
 const image = coverFor(post);
 const more = related(all.map((p) => ({ ...p, data: { ...p.data, draft: false } })), { ...post, data: { ...d, draft: false } }) as Post[];

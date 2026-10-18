@@ -1,14 +1,14 @@
 ---
 import { footerColumns } from '../../data/nav';
-import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFICE_LINE, CA_NAME, PARENT_COMPANY_NAME, PARENT_COMPANY_URL } from '../../config/site';
+import { COMPANY_SENTENCE, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFICE_LINE, CA_NAME, PARENT_COMPANY, SITE_NAME } from '../../config/site';
 ---
 <footer class="site-footer">
   <div class="wrap">
     <div class="top">
       <div class="brand">
-        <a class="logo" href="/" aria-label="ePahichan home">
-          <img src="/brand/epahichan-mark.svg" alt="" width="48" height="43" aria-hidden="true" />
-          <span>ePahichan</span>
+        <a class="logo" href="/" aria-label={`${SITE_NAME} home`}>
+          <img src="/brand/mark.svg" alt="" width="48" height="48" aria-hidden="true" />
+          <span>{SITE_NAME}</span>
         </a>
         <p class="contact">
           <a href={CONTACT_PHONE_TEL}>{CONTACT_PHONE_DISPLAY}</a><br />
@@ -23,7 +23,7 @@ import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFIC
         </nav>
       ))}
     </div>
-    <p class="legal muted">© {new Date().getFullYear()} ePahichan, built and run by {COMPANY}. Digital signature certificates are issued by {CA_NAME}. ePahichan is not a government service. Part of <a href={PARENT_COMPANY_URL} rel="noopener">{PARENT_COMPANY_NAME}</a>.</p>
+    <p class="legal muted">© {new Date().getFullYear()} {SITE_NAME}, built and run by {COMPANY_SENTENCE} Digital signature certificates are issued by {CA_NAME}. {SITE_NAME} is not a government service.{PARENT_COMPANY && <> Part of <a href={PARENT_COMPANY.url} rel="noopener">{PARENT_COMPANY.name}</a>.</>}</p>
   </div>
 </footer>
 

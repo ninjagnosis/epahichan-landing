@@ -9,7 +9,7 @@ faq:
   - q: "Is a digital signature legal in Nepal?"
     a: "Section 5 of the Electronic Transactions Act, 2063 gives a digital signature legal validity where the law requires a signature, when it is made by the procedures in the Act and its Rules."
   - q: "Who can issue a digital signature certificate in Nepal?"
-    a: "Only a licensed or recognised certifying authority under the Act. ePahichan certificates are issued by Nepal Certifying Company."
+    a: "Only a licensed or recognised certifying authority under the Act. %%brand%% certificates are issued by %%ca%%."
 ---
 
 A signature on paper is a picture of a hand movement. You can photocopy it, scan it and paste it onto another page. To tell a real one from a copy you need an expert, and the expert is not always sure.
@@ -38,7 +38,7 @@ Anybody can generate a key pair in a few seconds. A key pair on its own does not
 
 A **digital signature certificate** closes that gap. A certifying authority checks the person's identity and then signs a statement: this public key belongs to this person. The certificate travels with the signature, so whoever opens the file can see who signed and which authority vouched for them.
 
-In Nepal, the Electronic Transactions Act allows only a licensed or recognised certifying authority to issue these certificates. ePahichan certificates are issued by Nepal Certifying Company (NCC).
+In Nepal, the Electronic Transactions Act allows only a licensed or recognised certifying authority to issue these certificates. %%brand%% certificates are issued by %%ca%% (%%caShort%%).
 
 ## What the law says
 
@@ -54,4 +54,4 @@ A digital signature shows who signed what. It does not show when. Time has to co
 
 ## Where to start
 
-If you want to see the mechanics, you can [make and break a signature in your browser](/how-signing-works). If you want a certificate of your own, the [ePahichan app](/products/app) applies for one with your citizenship document and a selfie.
+If you want to see the mechanics, you can [make and break a signature in your browser](/how-signing-works). If you want a certificate of your own, the [%%brand%% app](/products/app) applies for one with your citizenship document and a selfie.

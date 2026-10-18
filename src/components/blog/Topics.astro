@@ -2,12 +2,13 @@
 // Topic bar shared by the blog index and tag pages. The current topic is
 // marked; "All" leads back to the full list.
 import { tagLabel } from '../../lib/blog';
+import { content } from '../../jurisdictions';
 export interface Props { tags: string[]; current?: string }
 const { tags, current } = Astro.props;
 ---
 <nav class="topics" aria-label="Topics">
   <a href="/blog" aria-current={!current ? 'page' : undefined}>All</a>
-  {tags.map((t) => <a href={`/blog/tag/${t}`} aria-current={current === t ? 'page' : undefined}>{tagLabel(t)}</a>)}
+  {tags.map((t) => <a href={`/blog/tag/${t}`} aria-current={current === t ? 'page' : undefined}>{tagLabel(t, content.copy.tagAcronyms)}</a>)}
 </nav>
 
 <style>

@@ -46,7 +46,7 @@ This is a plain reading for orientation, not legal advice. Where your document i
 
 ## Why this matters for a digital signing service
 
-A service that lets people sign "anything" is promising something the law does not give. Any ePahichan example you see, such as an order for bags between two shopkeepers, is a supply agreement because that kind of document sits clearly inside the Act.
+A service that lets people sign "anything" is promising something the law does not give. Any %%brand%% example you see, such as an order for bags between two shopkeepers, is a supply agreement because that kind of document sits clearly inside the Act.
 
 If you are building signing into a bank or insurance application, it is worth deciding up front which of your forms are contracts you can sign digitally and which are excluded instruments that must stay on paper. Our [guide for banks and lenders](/solutions/banks-lenders) notes the same split.
 

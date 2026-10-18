@@ -2,35 +2,37 @@
 import '@fontsource/caveat/latin-600.css';
 import CircleCheck from '@lucide/astro/icons/circle-check';
 import { APP_URL } from '../../config/site';
-const words = 'A digital signature for every Nepali'.split(' ');
+import { content } from '../../jurisdictions';
+
+const { hero } = content.copy;
+const words = hero.title.split(' ');
 ---
 <section class="hero on-stage">
   <div class="wrap grid">
     <div class="copy">
       <h1 class="display">{words.map((w, i) => (<><span class="w"><span style={`--i:${i}`}>{w}</span></span>{' '}</>))}</h1>
-      <p class="sub">Apply with your citizenship and a selfie. Sign PDFs from your phone. Anyone can check the signature.</p>
+      <p class="sub">{hero.sub}</p>
       <div class="actions">
         <a class="btn btn-light" href={APP_URL}>Open the app</a>
         <a class="btn btn-secondary" href="/how-signing-works">Make a signature in your browser</a>
       </div>
     </div>
-    <figure class="example" aria-label="Example: a loan agreement signed with ePahichan">
+    <figure class="example" aria-label={hero.exampleLabel}>
       <div class="sheet">
-        <p class="doc-title">Loan agreement</p>
-        <p class="doc-text">Sita Sharma borrows Rs 5,00,000 from the lender and repays it in 36 monthly instalments.</p>
-        <p class="doc-text">Both parties have read this agreement and sign it below.</p>
+        <p class="doc-title">{hero.exampleTitle}</p>
+        {hero.exampleLines.map((line) => <p class="doc-text">{line}</p>)}
         <div class="sign">
-          <p class="hand" aria-hidden="true">Sita Sharma</p>
-          <p class="who">Sita Sharma, borrower</p>
+          <p class="hand" aria-hidden="true">{hero.exampleSigner}</p>
+          <p class="who">{hero.exampleSigner}, {hero.exampleRole}</p>
         </div>
-        <p class="valid"><CircleCheck size={20} aria-hidden="true" />Signed with ePahichan. Signature valid.</p>
+        <p class="valid"><CircleCheck size={20} aria-hidden="true" />{hero.exampleValid}</p>
       </div>
     </figure>
   </div>
 </section>
 
 <style>
-  .hero { padding-block: var(--space-9); background: var(--brand); --stage-muted: #FBE3E4; --stage-line: #E8777D; }
+  .hero { padding-block: var(--space-9); background: var(--brand); --stage-muted: var(--tint-hero-muted); --stage-line: var(--tint-hero-line); }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); align-items: center; }
   .display { max-width: 12ch; }
   .sub { margin-top: var(--space-5); max-width: 36ch; font-size: 1.25rem; color: var(--stage-muted); }

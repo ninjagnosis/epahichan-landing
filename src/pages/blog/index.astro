@@ -6,13 +6,14 @@ import Topics from '../../components/blog/Topics.astro';
 import { posts } from '../../lib/posts';
 import { PAGE_SIZE, allTags, tagLabel } from '../../lib/blog';
 import { breadcrumbJsonLd } from '../../lib/seo';
+import { content } from '../../jurisdictions';
 
 const all = await posts();
 const items = all.slice(0, PAGE_SIZE);
 const last = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
 const tags = allTags(all.map((p) => ({ ...p, data: { ...p.data, draft: false } })));
 ---
-<Base title="Insights" description="Guides on digital signatures in Nepal: how they work, what the law says, how to verify a signed PDF and how to add signing to your application." path="/blog" jsonLd={[breadcrumbJsonLd([{ name: 'Insights', path: '/blog' }])]}>
+<Base title="Insights" description={content.copy.blog.description} path="/blog" jsonLd={[breadcrumbJsonLd([{ name: 'Insights', path: '/blog' }])]}>
   <section class="section blog-serif">
     <div class="wrap">
       <h1>Insights</h1>

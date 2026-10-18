@@ -13,3 +13,9 @@ dist/
 key.properties
 google-services.json
 service-account*.json
+
+# Staged from the operator's brand folder by scripts/stage-brand.mjs (docs/brand.md).
+public/brand/
+src/styles/brand-colours.css
+# Brand document for local builds (BRAND_JSON_FILE).
+brand.json

@@ -3,7 +3,8 @@ import Base from '../layouts/Base.astro';
 import Phone from '@lucide/astro/icons/phone';
 import Mail from '@lucide/astro/icons/mail';
 import MapPin from '@lucide/astro/icons/map-pin';
-import { CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFICE_LINE, COMPANY, APP_URL, DEVELOPERS_URL } from '../config/site';
+import { CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, OFFICE_LINE, COMPANY_SENTENCE, APP_URL, DEVELOPERS_URL, SITE_NAME } from '../config/site';
+import { content } from '../jurisdictions';
 import { breadcrumbJsonLd } from '../lib/seo';
 
 const ways = [
@@ -12,10 +13,10 @@ const ways = [
   { Icon: MapPin, label: 'Office', value: OFFICE_LINE, href: undefined },
 ];
 ---
-<Base title="Contact" description="Contact the ePahichan team in Kathmandu by phone or email about the app, the signing API or the ID check API." path="/contact" jsonLd={[breadcrumbJsonLd([{ name: 'Contact', path: '/contact' }])]}>
+<Base title="Contact" description={content.copy.contact.description} path="/contact" jsonLd={[breadcrumbJsonLd([{ name: 'Contact', path: '/contact' }])]}>
   <section class="section">
     <div class="wrap">
-      <h1 data-enter>Contact ePahichan</h1>
+      <h1 data-enter>Contact {SITE_NAME}</h1>
       <ul class="ways">
         {ways.map(({ Icon, label, value, href }, i) => (
           <li data-enter style={`--d:${i + 1}`}>
@@ -31,10 +32,10 @@ const ways = [
         <h2>Other places to go</h2>
         <ul>
           <li><a href={APP_URL}>Open the app</a> to apply for a certificate or sign a document.</li>
-          <li><a href={DEVELOPERS_URL}>Developer documentation</a> for the signing API and the ID check API.</li>
+          {DEVELOPERS_URL && <li><a href={DEVELOPERS_URL}>Developer documentation</a> for {content.copy.contact.developerApis}.</li>}
           <li><a href="/delete-account">Delete your account</a>.</li>
         </ul>
-        <p class="muted small">ePahichan is built and run by {COMPANY}.</p>
+        <p class="muted small">{SITE_NAME} is built and run by {COMPANY_SENTENCE}</p>
       </div>
     </div>
   </section>

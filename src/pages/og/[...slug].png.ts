@@ -1,5 +1,5 @@
-// One 1200x630 share image per page: the page's title on the ePahichan
-// stage with the mark. Built at build time with satori and resvg.
+// One 1200x630 share image per page: the page's title on the brand's
+// stage colour with the mark. Built at build time with satori and resvg.
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { readFileSync } from 'node:fs';
@@ -12,17 +12,24 @@ const { Resvg } = createRequire(import.meta.url)('@resvg/resvg-js') as typeof im
 import { products } from '../../data/products';
 import { solutions } from '../../data/solutions';
 import { glossary } from '../../data/glossary';
+import { brand } from '../../brand';
+import { tints } from '../../brand/colours-css.mjs';
+import { SITE_NAME, SITE_URL } from '../../config/site';
+import { content } from '../../jurisdictions';
 
 const font = (w: number) => readFileSync(`node_modules/@fontsource/poppins/files/poppins-latin-${w}-normal.woff`);
-const mark = `data:image/png;base64,${readFileSync('public/brand/epahichan-mark-192.png').toString('base64')}`;
+const markFile = readFileSync('public/brand/icon-192.png');
+const mark = `data:image/png;base64,${markFile.toString('base64')}`;
+// The mark is drawn 96 wide at its own proportions (the width and height are in the PNG header).
+const markHeight = Math.floor((96 * markFile.readUInt32BE(20)) / markFile.readUInt32BE(16));
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   const pages: { slug: string; title: string }[] = [
-    { slug: 'index', title: 'A digital signature for every Nepali' },
+    { slug: 'index', title: content.copy.home.ogTitle },
     { slug: 'how-signing-works', title: 'How a digital signature works' },
-    { slug: 'contact', title: 'Contact ePahichan' },
-    { slug: 'blog', title: 'ePahichan insights' },
+    { slug: 'contact', title: `Contact ${SITE_NAME}` },
+    { slug: 'blog', title: `${SITE_NAME} insights` },
     { slug: 'terms', title: 'Terms of service' },
     { slug: 'privacy', title: 'Privacy policy' },
     { slug: 'delete-account', title: 'Delete your account' },
@@ -35,7 +42,7 @@ export async function getStaticPaths() {
     ...[...new Set(posts.flatMap((p) => p.data.tags))].map((t) => ({ slug: `blog/tag/${t}`, title: `${t.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase())} articles` })),
   ];
   const n = Math.ceil(posts.length / 10);
-  for (let i = 2; i <= n; i++) pages.push({ slug: `blog/page/${i}`, title: `ePahichan insights, page ${i}` });
+  for (let i = 2; i <= n; i++) pages.push({ slug: `blog/page/${i}`, title: `${SITE_NAME} insights, page ${i}` });
   return pages.map((p) => ({ params: { slug: p.slug }, props: { title: p.title } }));
 }
 
@@ -45,20 +52,20 @@ export async function GET({ props }: APIContext) {
     {
       type: 'div',
       props: {
-        style: { width: 1200, height: 630, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: 72, background: '#6F0006', color: '#FFFFFF', fontFamily: 'Poppins' },
+        style: { width: 1200, height: 630, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: 72, background: brand.colours.brand.deep, color: '#FFFFFF', fontFamily: 'Poppins' },
         children: [
           {
             type: 'div',
             props: {
               style: { display: 'flex', alignItems: 'center', gap: 20 },
               children: [
-                { type: 'img', props: { src: mark, width: 96, height: 87 } },
-                { type: 'div', props: { style: { fontSize: 40, fontWeight: 600 }, children: 'ePahichan' } },
+                { type: 'img', props: { src: mark, width: 96, height: markHeight } },
+                { type: 'div', props: { style: { fontSize: 40, fontWeight: 600 }, children: SITE_NAME } },
               ],
             },
           },
           { type: 'div', props: { style: { fontSize: title.length > 40 ? 64 : 80, fontWeight: 600, lineHeight: 1.1, maxWidth: 1000 }, children: title } },
-          { type: 'div', props: { style: { fontSize: 30, color: '#F2C9CB' }, children: 'epahichan.com' } },
+          { type: 'div', props: { style: { fontSize: 30, color: tints(brand).stageMuted }, children: new URL(SITE_URL).host } },
         ],
       },
     },

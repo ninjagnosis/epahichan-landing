@@ -1,4 +1,4 @@
-# epahichan-public-landing
+# Public landing
 
 Read `AGENTS.md` and `docs/handoff.md` first. They define the product, the boundaries and the claims this page must not make.
 
@@ -8,10 +8,10 @@ Read `AGENTS.md` and `docs/handoff.md` first. They define the product, the bound
 
 ## Other code you can read
 
-Every project is mounted under `~/code`. `../chhap` is the ePahichan product itself (Flutter app, Rust backend). Only this repo and `../shared` are writable.
+Every project is mounted under `~/code`. `../chhap` is the product itself (Flutter app, Rust backend). Only this repo and `../shared` are writable.
 
 ## Working rules
 
 - Build with `pnpm build` and fix every error before calling work done.
-- Commit in small steps with plain messages. Push to `origin` (git.ninjainfosys.com/epahichan/epahichan-public-landing).
+- Commit in small steps with plain messages. Push to `origin`.
 - Record design and architecture decisions in `docs/handoff.md`.

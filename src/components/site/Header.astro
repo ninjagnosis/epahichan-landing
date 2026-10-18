@@ -6,7 +6,7 @@ import ChevronDown from '@lucide/astro/icons/chevron-down';
 // whole header with columns and one featured item.
 import { products } from '../../data/products';
 import { solutions } from '../../data/solutions';
-import { APP_URL, DEVELOPERS_URL } from '../../config/site';
+import { APP_URL, DEVELOPERS_URL, SITE_NAME } from '../../config/site';
 
 const path = Astro.url.pathname.replace(/\.html$/, '');
 const current = (href: string) => (path === href || path.startsWith(`${href}/`) ? 'page' : undefined);
@@ -17,7 +17,7 @@ const groups = [
     label: 'Products',
     base: '/products',
     links: products.map((p) => ({ href: `/products/${p.slug}`, label: p.name })),
-    feature: { title: 'Build signing into your application', href: DEVELOPERS_URL, cta: 'Developer documentation' },
+    feature: DEVELOPERS_URL ? { title: 'Build signing into your application', href: DEVELOPERS_URL, cta: 'Developer documentation' } : { title: 'Build signing into your application', href: '/contact', cta: 'Talk to us' },
   },
   {
     id: 'solutions',
@@ -37,7 +37,7 @@ const plain = [
     <div class="wrap u-row">
       <a href="/how-signing-works" class="u-call">Make a signature in your browser</a>
       <nav aria-label="Utility" class="u-links">
-        <a href={DEVELOPERS_URL}>Developers</a>
+        {DEVELOPERS_URL && <a href={DEVELOPERS_URL}>Developers</a>}
         <a href="/contact">Contact</a>
         <a href={APP_URL}>Open the app</a>
       </nav>
@@ -46,9 +46,9 @@ const plain = [
 
 <header class="site-header">
   <div class="wrap bar">
-    <a class="logo" href="/" aria-label="ePahichan home">
-      <img src="/brand/epahichan-mark.svg" alt="" width="40" height="36" class="logo-mark" aria-hidden="true" />
-      <span class="logo-name">ePahichan</span>
+    <a class="logo" href="/" aria-label={`${SITE_NAME} home`}>
+      <img src="/brand/mark.svg" alt="" width="40" height="40" class="logo-mark" aria-hidden="true" />
+      <span class="logo-name">{SITE_NAME}</span>
     </a>
 
     <nav class="nav-wide" aria-label="Main">
@@ -96,7 +96,7 @@ const plain = [
             {plain.map((l) => <li><a class="m-row" href={l.href} aria-current={current(l.href)}>{l.label}</a></li>)}
           </ul>
           <ul class="m-small">
-            <li><a href={DEVELOPERS_URL}>Developers</a></li>
+            {DEVELOPERS_URL && <li><a href={DEVELOPERS_URL}>Developers</a></li>}
             <li><a href="/privacy">Privacy</a></li>
           </ul>
           <div class="mobile-actions">

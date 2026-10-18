@@ -1,4 +1,5 @@
-import { ADDRESS, COMPANY, CONTACT_EMAIL, CONTACT_PHONE_JSONLD, PARENT_COMPANY_ID, PARENT_COMPANY_NAME, PARENT_COMPANY_URL, SITE_NAME, SITE_URL } from '../config/site';
+import { ADDRESS, CONTACT_EMAIL, CONTACT_PHONE_JSONLD, LOCALES, PARENT_COMPANY, SITE_NAME, SITE_URL } from '../config/site';
+import { content } from '../jurisdictions';
 
 /** The one URL a page is known by: lowercase, no query, no .html, no trailing slash except root. */
 export function canonicalFor(path: string): string {
@@ -25,12 +26,12 @@ export function orgJsonLd() {
     '@id': ORG_ID,
     name: SITE_NAME,
     url: `${SITE_URL}/`,
-    logo: abs('/brand/epahichan-mark-512.png'),
+    logo: abs('/brand/icon-512.png'),
     email: CONTACT_EMAIL,
     telephone: CONTACT_PHONE_JSONLD,
     address: { '@type': 'PostalAddress', addressLocality: ADDRESS.locality, addressCountry: ADDRESS.country },
-    contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', telephone: CONTACT_PHONE_JSONLD, email: CONTACT_EMAIL, areaServed: 'NP', availableLanguage: ['en', 'ne'] },
-    parentOrganization: { '@type': 'Organization', '@id': PARENT_COMPANY_ID, name: PARENT_COMPANY_NAME, url: PARENT_COMPANY_URL },
+    contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', telephone: CONTACT_PHONE_JSONLD, email: CONTACT_EMAIL, areaServed: ADDRESS.country, availableLanguage: LOCALES.supported },
+    ...(PARENT_COMPANY ? { parentOrganization: { '@type': 'Organization', '@id': PARENT_COMPANY.id, name: PARENT_COMPANY.name, url: PARENT_COMPANY.url } } : {}),
   };
 }
 
@@ -41,7 +42,7 @@ export function websiteJsonLd() {
     '@id': `${SITE_URL}/#website`,
     name: SITE_NAME,
     url: `${SITE_URL}/`,
-    inLanguage: 'en',
+    inLanguage: LOCALES.default,
     publisher: { '@id': ORG_ID },
   };
 }
@@ -70,8 +71,8 @@ export function softwareJsonLd(p: { slug: string; name: string; short: string; s
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web, Android, iOS',
     url: canonicalFor(`/products/${p.slug}`),
-    areaServed: { '@type': 'Country', name: 'Nepal' },
-    inLanguage: 'en',
+    areaServed: { '@type': 'Country', name: ADDRESS.countryName },
+    inLanguage: LOCALES.default,
     ...(p.seoTitle ? { alternateName: p.seoTitle } : {}),
     ...(p.gets?.length ? { featureList: p.gets } : {}),
     provider: { '@id': ORG_ID },
@@ -88,7 +89,7 @@ export function faqJsonLd(items: { q: string; a: string }[]) {
   };
 }
 
-/** A solution page: the service ePahichan provides to one kind of organization. */
+/** A solution page: the service the brand provides to one kind of organization. */
 export function serviceJsonLd(s: { slug: string; name: string; description: string }) {
   return {
     '@context': 'https://schema.org',
@@ -97,7 +98,7 @@ export function serviceJsonLd(s: { slug: string; name: string; description: stri
     serviceType: 'Digital signature and document signing',
     description: s.description,
     url: canonicalFor(`/solutions/${s.slug}`),
-    areaServed: { '@type': 'Country', name: 'Nepal' },
+    areaServed: { '@type': 'Country', name: ADDRESS.countryName },
     audience: { '@type': 'BusinessAudience', name: s.name },
     provider: { '@id': ORG_ID },
   };
@@ -127,10 +128,10 @@ export function articleJsonLd(post: {
     mainEntityOfPage: canonicalFor(`/blog/${post.slug}`),
     author: { '@type': 'Organization', '@id': ORG_ID, name: SITE_NAME },
     publisher: { '@id': ORG_ID },
-    inLanguage: 'en',
+    inLanguage: LOCALES.default,
     ...(post.tags?.length ? { keywords: post.tags.map((t) => t.replace(/-/g, ' ')).join(', '), articleSection: post.tags[0].replace(/-/g, ' ') } : {}),
     ...(post.words ? { wordCount: post.words } : {}),
-    about: { '@type': 'Thing', name: 'Digital signatures in Nepal' },
+    about: { '@type': 'Thing', name: content.copy.seo.aboutPosts },
   };
 }
 
@@ -140,7 +141,7 @@ export function definedTermSetJsonLd(terms: { slug: string; term: string; short:
     '@context': 'https://schema.org',
     '@type': 'DefinedTermSet',
     '@id': `${SITE_URL}/glossary#set`,
-    name: 'ePahichan glossary of digital signature and identity terms',
+    name: `${SITE_NAME} glossary of digital signature and identity terms`,
     url: canonicalFor('/glossary'),
     hasDefinedTerm: terms.map((t) => ({ '@type': 'DefinedTerm', name: t.term, description: t.short, url: canonicalFor(`/glossary/${t.slug}`) })),
   };

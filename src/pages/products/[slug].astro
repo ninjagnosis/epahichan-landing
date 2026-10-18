@@ -16,7 +16,7 @@ export function getStaticPaths() {
 const { p } = Astro.props as { p: Product };
 const path = `/products/${p.slug}`;
 const guides = (await posts()).filter((x) => !x.data.draft && x.data.tags.some((t) => p.tags.includes(t))).slice(0, 4);
-const cta = p.slug === 'app' ? { href: APP_URL, label: 'Open the app' } : { href: DEVELOPERS_URL, label: 'Read the developer docs' };
+const cta = p.slug === 'app' ? { href: APP_URL, label: 'Open the app' } : DEVELOPERS_URL ? { href: DEVELOPERS_URL, label: 'Read the developer docs' } : { href: '/contact', label: 'Ask about access' };
 ---
 <Base title={p.seoTitle} description={p.description} path={path} jsonLd={[softwareJsonLd({ ...p }), faqJsonLd(p.faq), breadcrumbJsonLd([{ name: p.name, path }])]}>
   <section class="top">
