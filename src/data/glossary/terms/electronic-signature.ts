@@ -8,6 +8,7 @@ const term: Term = {
     'Typing your name at the bottom of an email, drawing a signature on a touchscreen and clicking “I agree” are all electronic signatures. They record that someone did something, but they do not by themselves bind a person to an exact file.',
     'A digital signature is one kind of electronic signature, built on cryptography, which does bind a certificate holder to an exact file and exposes later changes.',
     'Which kind a document needs depends on the law and on what you will have to prove if someone disputes it.',
+    'For a side-by-side comparison and when each is enough, read [digital signature vs electronic signature](/blog/digital-signature-vs-electronic-signature).',
   ],
   related: ['digital-signature', 'otp'],
 };

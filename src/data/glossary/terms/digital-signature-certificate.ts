@@ -5,8 +5,8 @@ const term: Term = {
   term: 'Digital signature certificate',
   aka: ['DSC', 'Digital certificate', 'Digital signature certificate Nepal', 'डिजिटल हस्ताक्षर प्रमाणपत्र'],
   updated: '2026-10-19',
-  title: 'Digital signature certificate: meaning and how to get one',
-  description: 'A digital signature certificate ties a public key to a named person. What it holds, who issues it in Nepal, how long it lasts and how to get one.',
+  title: 'Digital signature certificate (DSC): meaning and what it holds',
+  description: 'A digital signature certificate ties a public key to a named person. What it holds, who issues it in Nepal, how long it lasts and what it is used for.',
   short: 'A digital signature certificate is a record, issued by a certifying authority, that ties a public key to a named person. It is what lets someone checking a signature know whose signature it is.',
   body: [
     'A key pair alone says nothing about a person: anybody can generate one. A certificate fixes that gap. The [certifying authority](/glossary/certifying-authority) checks who you are, then signs a statement that this public key belongs to you.',
@@ -47,15 +47,9 @@ const term: Term = {
     },
     {
       id: 'how-to-get',
-      h: 'How to get a digital signature certificate',
+      h: 'Getting a certificate',
       p: [
-        'The authority has to confirm that the person asking is who they say they are before it signs a certificate in their name. The steps are usually:',
-      ],
-      list: [
-        'Generate a key pair on a device you control. The private key stays there.',
-        'Send the authority a request that carries the public key (a CSR) together with your identity details.',
-        'Prove your identity, for example with your citizenship certificate and a live photo.',
-        'The authority checks, issues the certificate and returns it. You install it next to your private key.',
+        'In short: a key pair is made on a device you control, the public half goes to a licensed certifying authority with your identity details, and the authority checks who you are before it signs your certificate. The full steps, documents and timings for Nepal are in our guide [how to get a digital signature certificate in Nepal](/blog/how-to-get-digital-signature-certificate-nepal).',
       ],
     },
     {
