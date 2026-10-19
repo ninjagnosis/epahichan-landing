@@ -1,9 +1,9 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import PostList from '../../../components/blog/PostList.astro';
-import Pager from '../../../components/blog/Pager.astro';
-import { posts, type Post } from '../../../lib/posts';
-import { PAGE_SIZE, pagePath } from '../../../lib/blog';
+import PostList from '@ninjainfosys/site-kit/components/blog/PostList.astro';
+import Pager from '@ninjainfosys/site-kit/components/blog/Pager.astro';
+import { posts, type Post } from '@ninjainfosys/site-kit/lib/posts';
+import { PAGE_SIZE, pagePath } from '@ninjainfosys/site-kit/lib/blog';
 
 export async function getStaticPaths() {
   const all = await posts();

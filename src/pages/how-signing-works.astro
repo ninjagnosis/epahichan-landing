@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import SignDemo from '../components/sign-demo/SignDemo.astro';
-import CtaBand from '../components/site/CtaBand.astro';
-import Related from '../components/site/Related.astro';
+import CtaBand from '@ninjainfosys/site-kit/components/site/CtaBand.astro';
+import Related from '@ninjainfosys/site-kit/components/site/Related.astro';
 import { breadcrumbJsonLd } from '../lib/seo';
 ---
 <Base title="How a digital signature works" description="Make and break a digital signature in your browser. See how a private key signs a document, how a public key checks it, and why one changed character is caught." path="/how-signing-works" jsonLd={[breadcrumbJsonLd([{ name: 'How signing works', path: '/how-signing-works' }])]}>

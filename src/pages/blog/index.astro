@@ -1,10 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PostList from '../../components/blog/PostList.astro';
-import Pager from '../../components/blog/Pager.astro';
-import Topics from '../../components/blog/Topics.astro';
-import { posts } from '../../lib/posts';
-import { PAGE_SIZE, allTags, tagLabel } from '../../lib/blog';
+import PostList from '@ninjainfosys/site-kit/components/blog/PostList.astro';
+import Pager from '@ninjainfosys/site-kit/components/blog/Pager.astro';
+import Topics from '@ninjainfosys/site-kit/components/blog/Topics.astro';
+import { posts } from '@ninjainfosys/site-kit/lib/posts';
+import { PAGE_SIZE, allTags, tagLabel } from '@ninjainfosys/site-kit/lib/blog';
 import { breadcrumbJsonLd } from '../../lib/seo';
 
 const all = await posts();

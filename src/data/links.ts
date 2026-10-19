@@ -25,3 +25,6 @@ export const productsForTags = (tags: string[]): Link[] =>
 /** Industries a post is about, from its tags. */
 export const solutionsForTags = (tags: string[]): Link[] =>
   solutions.filter((s) => s.tags.some((t) => tags.includes(t))).map((s) => solutionLink(s.slug)!);
+
+/** Blog tags that belong to each product, for the glossary's guides. */
+export const productTags: Record<string, string[]> = Object.fromEntries(products.map((p) => [p.slug, p.tags]));

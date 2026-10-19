@@ -1,7 +1,8 @@
 import { defineConfig } from 'astro/config';
+import siteKit from '@ninjainfosys/site-kit/integration';
 
 // Static build, no trailing slashes. The sitemap is written after the build
-// from dist/ (scripts/sitemap.mjs).
+// from dist/ (site-kit sitemap).
 export default defineConfig({
   markdown: { shikiConfig: { theme: "github-light" } },
   site: 'https://epahichan.com',
@@ -10,11 +11,9 @@ export default defineConfig({
   build: { format: 'file', assets: 'assets', inlineStylesheets: 'auto' },
   devToolbar: { enabled: false },
   compressHTML: true,
+  // The blog pages stay the site's own: this blog keeps its earlier layout.
+  integrations: [siteKit({ pages: { blog: false } })],
   vite: {
     server: { allowedHosts: true },
-    // resvg is a native module used only at build time for OG images.
-    ssr: { external: ['@resvg/resvg-js'] },
-    optimizeDeps: { exclude: ['@resvg/resvg-js'] },
-    build: { rollupOptions: { external: [/\.node$/] } },
   },
 });

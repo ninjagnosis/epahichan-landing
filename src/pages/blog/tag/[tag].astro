@@ -1,9 +1,9 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import PostList from '../../../components/blog/PostList.astro';
-import Topics from '../../../components/blog/Topics.astro';
-import { posts, type Post } from '../../../lib/posts';
-import { tagLabel } from '../../../lib/blog';
+import PostList from '@ninjainfosys/site-kit/components/blog/PostList.astro';
+import Topics from '@ninjainfosys/site-kit/components/blog/Topics.astro';
+import { posts, type Post } from '@ninjainfosys/site-kit/lib/posts';
+import { tagLabel } from '@ninjainfosys/site-kit/lib/blog';
 import { breadcrumbJsonLd } from '../../../lib/seo';
 
 export async function getStaticPaths() {
