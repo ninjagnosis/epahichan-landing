@@ -27,8 +27,8 @@ importers:
         specifier: 1.53.0
         version: 1.53.0(astro@5.18.2(@types/node@26.6.5)(rollup@4.63.3)(typescript@5.9.3)(yaml@2.9.1))
       '@ninjainfosys/site-kit':
-        specifier: ^0.5.0
-        version: 0.5.0(astro@5.18.2(@types/node@26.6.5)(rollup@4.63.3)(typescript@5.9.3)(yaml@2.9.1))
+        specifier: ^0.5.1
+        version: 0.5.1(astro@5.18.2(@types/node@26.6.5)(rollup@4.63.3)(typescript@5.9.3)(yaml@2.9.1))
       astro:
         specifier: ^5.10.0
         version: 5.18.2(@types/node@26.6.5)(rollup@4.63.3)(typescript@5.9.3)(yaml@2.9.1)
@@ -774,8 +774,8 @@ packages:
       '@emnapi/core': ^1.7.1 || ^2.0.0-alpha.4
       '@emnapi/runtime': ^1.7.1 || ^2.0.0-alpha.4
 
-  '@ninjainfosys/site-kit@0.5.0':
-    resolution: {integrity: sha512-/jCh3RXnKifSV/nkIIsm2ha78/GPHzV/8aYEjPrunCISptSHuSf5S08Dfn5HKxDUJOCsHWua/9UkS/yQCznjEQ==}
+  '@ninjainfosys/site-kit@0.5.1':
+    resolution: {integrity: sha512-bNGLf0rBxbCMjrZPN9GZaDfp511MQg7/3PLlUwOxMzDwlmUT6koDCyGFkmj78+4swTKYJZdRN8o6ZjLswYYX8g==}
     engines: {node: '>=20'}
     hasBin: true
     peerDependencies:
@@ -3322,7 +3322,7 @@ snapshots:
       '@emnapi/runtime': 1.11.3
       '@tybys/wasm-util': 0.10.4
 
-  '@ninjainfosys/site-kit@0.5.0(astro@5.18.2(@types/node@26.6.5)(rollup@4.63.3)(typescript@5.9.3)(yaml@2.9.1))':
+  '@ninjainfosys/site-kit@0.5.1(astro@5.18.2(@types/node@26.6.5)(rollup@4.63.3)(typescript@5.9.3)(yaml@2.9.1))':
     dependencies:
       '@astrojs/rss': 4.0.19
       '@fontsource-variable/inter': 5.2.8
