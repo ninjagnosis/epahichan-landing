@@ -3,6 +3,16 @@ title: "How to check that a signed PDF is genuine and unchanged"
 description: A signed PDF is only worth something if it verifies. What a signature check looks at, what a pass and a fail mean, and what a check cannot tell you.
 date: 2026-10-06
 tags: [digital-signature, guides]
+cover: ../../assets/blog/how-to-check-a-signed-pdf/keyboard-and-pen.jpg
+coverAlt: A pen lying across a laptop keyboard
+credits:
+  - file: keyboard-and-pen.jpg
+    title: "Keyboard and pen"
+    author: "Ala z"
+    authorUrl: "https://commons.wikimedia.org/wiki/User:Ala_z"
+    source: "https://commons.wikimedia.org/wiki/File:Keyboard_and_pen.JPG"
+    licence: Public domain
+    changes: "Resized"
 faq:
   - q: "Do I need the signer's permission to check a signature?"
     a: "No. Checking needs the file, the signature and the signer's public key, which is inside their certificate."

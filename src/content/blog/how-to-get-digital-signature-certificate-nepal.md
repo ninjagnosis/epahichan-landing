@@ -3,6 +3,15 @@ title: "How to get a digital signature certificate in Nepal: what to prepare and
 description: "Who can issue a digital signature certificate in Nepal, what documents to prepare, how identity is checked, and how to avoid the usual delays."
 date: 2026-10-14
 tags: [digital-signature, guides]
+cover: ../../assets/blog/how-to-get-digital-signature-certificate-nepal/usb-token.jpg
+coverAlt: An eToken NG-OTP USB token, the kind of hardware that stores a signing key
+credits:
+  - file: usb-token.jpg
+    title: "EToken NG-OTP"
+    author: "Kharitonov"
+    source: "https://commons.wikimedia.org/wiki/File:EToken_NG-OTP.jpg"
+    licence: CC BY-SA 3.0
+    changes: "Resized"
 faq:
   - q: "Who issues digital signature certificates in Nepal?"
     a: "Only a certifying authority licensed or recognised under the Electronic Transactions Act, 2063. The Office of the Controller of Certification licenses and oversees them. ePahichan certificates are issued by Nepal Certifying Company (NCC)."

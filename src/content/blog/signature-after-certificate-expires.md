@@ -3,6 +3,16 @@ title: "Is a digital signature still valid after the certificate expires?"
 description: A signing certificate lasts a limited time, but a signed contract may need to hold for years. What expiry changes, what it does not, and what to keep on file.
 date: 2026-10-11
 tags: [digital-signature, guides]
+cover: ../../assets/blog/signature-after-certificate-expires/sand-clock.jpg
+coverAlt: A sand clock with the sand running through
+credits:
+  - file: sand-clock.jpg
+    title: "Sand Clock"
+    author: "Thamizhpparithi Maari"
+    authorUrl: "https://commons.wikimedia.org/wiki/User:Thamizhpparithi_Maari"
+    source: "https://commons.wikimedia.org/wiki/File:Sand_Clock.jpg"
+    licence: CC BY-SA 3.0
+    changes: "Resized"
 faq:
   - q: "Does a signature become invalid when the certificate expires?"
     a: "No. What matters is whether the certificate was valid at the moment of signing. A document signed in time stays signed, provided you can show when it was signed."

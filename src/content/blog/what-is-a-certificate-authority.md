@@ -3,6 +3,15 @@ title: "What a certificate authority is, and why a digital signature needs one"
 description: A certificate authority checks who you are and vouches for your signing key. How trust chains work, why they matter, and what to look for in Nepal.
 date: 2026-10-13
 tags: [digital-signature, guides]
+cover: ../../assets/blog/what-is-a-certificate-authority/archives-server-room.jpg
+coverAlt: Server racks in the server room at The National Archives in the UK
+credits:
+  - file: archives-server-room.jpg
+    title: "A view of the server room at The National Archives"
+    author: "The National Archives (UK)"
+    source: "https://commons.wikimedia.org/wiki/File:A_view_of_the_server_room_at_The_National_Archives.jpg"
+    licence: CC BY 3.0
+    changes: "Resized"
 faq:
   - q: "What is a certificate authority?"
     a: "A certificate authority, called a certifying authority in Nepal's law, is an organisation that checks a person's identity and then signs a certificate stating that a public key belongs to them."

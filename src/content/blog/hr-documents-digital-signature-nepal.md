@@ -3,6 +3,15 @@ title: "Signing employment contracts and HR letters digitally in Nepal"
 description: Offer letters, contracts and policy acknowledgements can be signed digitally. What to sign this way, how to set it up and what to keep on file.
 date: 2026-10-12
 tags: [digital-signature, guides]
+cover: ../../assets/blog/hr-documents-digital-signature-nepal/file-cabinet.jpg
+coverAlt: An office file cabinet with two drawers open and full of folders
+credits:
+  - file: file-cabinet.jpg
+    title: "File Cabinet"
+    author: "rrafson"
+    source: "https://commons.wikimedia.org/wiki/File:File_Cabinet.jpg"
+    licence: CC BY-SA 3.0
+    changes: "Resized"
 faq:
   - q: "Can an employment contract be signed digitally in Nepal?"
     a: "Nepal's Electronic Transactions Act, 2063 gives a digital signature made with a licensed certificate the same standing as a handwritten one. Check with a lawyer for any document that a specific rule says must be on paper."

@@ -3,6 +3,16 @@ title: "Adding signing to your application: requests, webhooks and safe retries"
 description: How a signing integration is shaped. Create a request from your server, receive a webhook when it is signed, and make retries safe. Written for developers.
 date: 2026-10-09
 tags: [developers, digital-signature]
+cover: ../../assets/blog/signing-requests-webhooks-retries/server-room.jpg
+coverAlt: Rows of server racks in a data centre
+credits:
+  - file: server-room.jpg
+    title: "PDC server room"
+    author: "Esquilo"
+    authorUrl: "https://commons.wikimedia.org/wiki/User:Esquilo"
+    source: "https://commons.wikimedia.org/wiki/File:PDC_server_room.jpg"
+    licence: CC BY-SA 3.0
+    changes: "Resized"
 faq:
   - q: "Should the browser or mobile app call the signing API directly?"
     a: "No. Call it from your server. API credentials in an app can be extracted and misused."

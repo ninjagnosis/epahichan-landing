@@ -3,6 +3,16 @@ title: "What a digital signature does not prove: the question of when"
 description: A signature shows who signed what, not when. Why a device clock proves nothing about time, and what a trusted timestamp adds to a signed document.
 date: 2026-10-07
 tags: [digital-signature, guides]
+cover: ../../assets/blog/what-a-digital-signature-does-not-prove/padlock.jpg
+coverAlt: A closed metal padlock
+credits:
+  - file: padlock.jpg
+    title: "Padlock klódka ubt"
+    author: "Tomasz Sienicki"
+    authorUrl: "https://commons.wikimedia.org/wiki/User:Tsca"
+    source: "https://commons.wikimedia.org/wiki/File:Padlock_kl%C3%B3dka_ubt.JPG"
+    licence: CC BY-SA 3.0
+    changes: "Resized"
 faq:
   - q: "Does a digital signature include the time of signing?"
     a: "A signing tool may record a time, but if it comes from the signer's device clock it proves nothing, because anyone can set a device clock to any time."

@@ -3,6 +3,15 @@ title: "Digital signature or electronic signature: which one does your document 
 description: A typed name, a drawn squiggle and a clicked box are electronic signatures. A digital signature binds a person to an exact file. Here is how to choose.
 date: 2026-10-01
 tags: [digital-signature, guides]
+cover: ../../assets/blog/digital-signature-vs-electronic-signature/contract-signature.jpg
+coverAlt: A pen resting on a printed contract beside a signature line
+credits:
+  - file: contract-signature.jpg
+    title: "Legal Contract & Signature - Warm Tones"
+    author: "Blogtrepreneur"
+    source: "https://commons.wikimedia.org/wiki/File:Legal_Contract_%26_Signature_-_Warm_Tones.jpg"
+    licence: CC BY 2.0
+    changes: "Resized"
 faq:
   - q: "Is an electronic signature legally valid in Nepal?"
     a: "The Electronic Transactions Act, 2063 gives legal validity to a digital signature made by its procedures. Whether another kind of electronic mark is enough depends on the document and the law that governs it."

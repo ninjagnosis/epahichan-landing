@@ -3,6 +3,15 @@ title: "What a digital signature is, and what it is worth in Nepal"
 description: A digital signature is mathematics, not a picture of your name. How the two keys work, what a certificate adds, and what Section 5 of the Act says.
 date: 2026-09-29
 tags: [digital-signature, guides]
+cover: ../../assets/blog/what-is-a-digital-signature-nepal/laptop-smart-card-reader.jpg
+coverAlt: The smart card slot on the side of a laptop, marked SC
+credits:
+  - file: laptop-smart-card-reader.jpg
+    title: "Laptop smart card reader"
+    author: "Blueviper99"
+    source: "https://commons.wikimedia.org/wiki/File:Laptop_smart_card_reader.jpg"
+    licence: CC BY-SA 3.0
+    changes: "Resized"
 faq:
   - q: "Is a digital signature the same as a scanned signature?"
     a: "No. A scanned signature is a picture and can be pasted onto any document. A digital signature is calculated from the document and a private key, so it fits that document only."
