@@ -12,7 +12,7 @@ const term: Term = {
   short: 'OCC stands for Office of the Controller of Certification, the Nepali government office set up under the Electronic Transactions Act. It licenses certifying authorities and keeps the list of those allowed to issue digital signature certificates.',
   body: [
     'The OCC is the regulator for digital signature certificates in Nepal. If a company wants to issue the certificates that digital signatures depend on, it needs a licence, and the OCC is the office that supervises that licence.',
-    'The Nepali name is प्रमाणीकरण नियन्त्रकको कार्यालय. English sources sometimes write it as the Office of the Controller of Certificate. Both refer to the same office, which publishes at occ.gov.np.',
+    'The Nepali name is प्रमाणीकरण नियन्त्रकको कार्यालय. English sources sometimes write it as the Office of the Controller of Certificate. Both refer to the same office. Its old site, occ.gov.np, now redirects to the National Cyber Security Center at ncsc.gov.np.',
   ],
   sections: [
     {
@@ -77,7 +77,7 @@ const term: Term = {
       h: 'A short history',
       p: [
         'The Act created the post of Controller in the early years after it was passed, and a certifying authority needs a licence from that office. A 2012 news report said that, because no company had applied to become a certifying authority, the OCC itself was acting as one at that time. An undated compliance guide later names Nepal Certifying Company, working with Radiant Info Tech Nepal, as a certifying authority.',
-        'That history shows why you should not trust old articles for the current state. Who is licensed changes over time, and the only reliable answer is the list the OCC publishes at occ.gov.np.',
+        'That history shows why you should not trust old articles for the current state. Who is licensed changes over time, and the only reliable answer is the current list on ncsc.gov.np, where occ.gov.np now redirects.',
       ],
     },
     {
@@ -107,7 +107,7 @@ const term: Term = {
   faq: [
     { q: 'What is the full form of OCC in Nepal?', a: 'OCC stands for Office of the Controller of Certification. Some sources write Office of the Controller of Certificate.' },
     { q: 'What does the OCC do?', a: 'It licenses and supervises certifying authorities under the Electronic Transactions Act and keeps the list of recognised issuers of digital signature certificates.' },
-    { q: 'How do I check if a certifying authority is licensed in Nepal?', a: 'The OCC keeps the list of recognised certifying authorities. Check the issuer named on your certificate against that list at occ.gov.np.' },
+    { q: 'How do I check if a certifying authority is licensed in Nepal?', a: 'The OCC keeps the list of recognised certifying authorities. Check the issuer named on your certificate against that list on ncsc.gov.np (occ.gov.np now redirects there).' },
     { q: 'Does the OCC issue digital signature certificates?', a: 'No. Licensed certifying authorities issue them. The OCC licenses and supervises those authorities.' },
   ],
   related: ['electronic-transactions-act', 'certifying-authority', 'digital-signature-certificate', 'pki'],

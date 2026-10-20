@@ -156,6 +156,8 @@ Prices for certificates vary by authority, by class, by validity period and by w
 - If my phone or token is lost, what does replacement cost and how long does it take?
 - Is there any charge to verify or to sign, or only for the certificate?
 
+For the published price lists we could find, by class and validity, see [digital signature certificate price in Nepal](/blog/digital-signature-certificate-price-nepal).
+
 In the ePahichan app, the fee is shown before you pay, and you pay through Fonepay or a bank or wallet app.
 
 ## How long it takes, and why it sometimes takes longer
