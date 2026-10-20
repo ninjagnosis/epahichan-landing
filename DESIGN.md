@@ -19,6 +19,8 @@ colour comes from `BRAND.md`.
 | `--stage` | `#6F0006` | the one dark band per page (white text 12.5:1) |
 | `--stage-muted` | `#F2C9CB` | secondary text on stage |
 | `--ok` | `#1B6B3A` | valid signature |
+| `--mark` | = `--accent` | bullets, the reading progress bar |
+| `--warn-bg` / `--warn-ink` | `#FFF1CC` / `#5C3A00` | warning callout panel in posts (9:1) |
 
 Light only. Poppins for headings, buttons and navigation, Inter for reading.
 Radius 8px controls, 12px panels. No shadows, gradients or blur.
@@ -39,3 +41,5 @@ glossary, contact, terms, privacy, delete account.
   no customer or availability claims.
 - The operator (Ninja Infosys Pvt. Ltd.) and the certifying authority (Nepal
   Certifying Company) are named as in the privacy policy.
+
+Fonts are tokens (`--font-sans`, `--font-display`, `--font-mono`, `--font-serif`); the shared blog and glossary styles use only these.

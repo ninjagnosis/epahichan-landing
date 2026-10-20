@@ -11,8 +11,7 @@ export default defineConfig({
   build: { format: 'file', assets: 'assets', inlineStylesheets: 'auto' },
   devToolbar: { enabled: false },
   compressHTML: true,
-  // The blog pages stay the site's own: this blog keeps its earlier layout.
-  integrations: [siteKit({ pages: { blog: false } })],
+  integrations: [siteKit()],
   vite: {
     server: { allowedHosts: true },
   },
